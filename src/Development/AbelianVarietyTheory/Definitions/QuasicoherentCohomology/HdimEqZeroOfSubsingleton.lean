@@ -22,13 +22,13 @@ section -- clump:auto
 
 open CategoryTheory Opposite Limits Abelian
 
-universe w v u
+universe w v
 
 noncomputable section
 
 namespace GlobalTheory.SiteCoh
 
-variable {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
+variable {C : Type v} [SmallCategory C] (J : GrothendieckTopology C)
   [HasSheafify J AddCommGrpCat.{v}]
 
 abbrev freeSheaf : C ⥤ Sheaf J AddCommGrpCat.{v} :=
@@ -52,10 +52,10 @@ def freePresheafIsoConst {T : C} (hT : IsTerminal T) :
   NatIso.ofComponents
     (fun V ↦
       letI : Unique (V.unop ⟶ T) := ⟨⟨hT.from _⟩, fun _ ↦ hT.hom_ext _ _⟩
-      ((FreeAbelianGroup.uniqueEquiv (V.unop ⟶ T)).trans AddEquiv.ulift.symm).toAddCommGrpIso)
+      ((FreeAddCommGroup.uniqueEquiv (V.unop ⟶ T)).trans AddEquiv.ulift.symm).toAddCommGrpIso)
     (fun {V W} f ↦ by
       apply AddCommGrpCat.hom_ext
-      apply FreeAbelianGroup.lift_ext
+      apply FreeAddCommGroup.lift_ext
       intro x
       rfl)
 
@@ -67,7 +67,12 @@ variable [HasExt.{w} (Sheaf J AddCommGrpCat.{v})]
 
 def extEquiv (F : Sheaf J AddCommGrpCat.{v}) (n : ℕ) (U : C) :
     F.H' n U ≃+ Ext.{w} ((freeSheaf J).obj U) F n :=
-  AddEquiv.refl _
+  let e : F.H' n U ≅ AddCommGrpCat.of (Ext.{w} ((freeSheaf J).obj U) F n) := eqToIso rfl
+  { toFun := e.hom
+    invFun := e.inv
+    left_inv := e.hom_inv_id_apply
+    right_inv := e.inv_hom_id_apply
+    map_add' := map_add e.hom.hom }
 
 abbrev map {F G : Sheaf J AddCommGrpCat.{v}} (f : F ⟶ G) (n : ℕ) (U : C) :
     F.H' n U ⟶ G.H' n U :=
@@ -77,15 +82,15 @@ abbrev res (F : Sheaf J AddCommGrpCat.{v}) (n : ℕ) {U V : C} (i : V ⟶ U) :
     F.H' n U ⟶ F.H' n V :=
   (F.cohomologyPresheaf n).map i.op
 
+private lemma flip_additive {A : Type*} [Category A] {D E : Type*} [Category D] [Category E]
+    [Preadditive D] [Preadditive E] (F : A ⥤ D ⥤ E) (hF : ∀ X, (F.obj X).Additive) :
+    F.flip.Additive where
+  map_add := NatTrans.ext <| funext fun X ↦ (hF X).map_add
+
 instance cohomologyPresheafFunctor_additive (n : ℕ) :
-    (Sheaf.cohomologyPresheafFunctor.{w} J n).Additive where
-  map_add {F G f g} := by
-    ext U x
-    apply (extEquiv G n U.unop).injective
-    change (extEquiv F n U.unop x).comp (Ext.mk₀ (f + g)) (add_zero n) =
-      (extEquiv F n U.unop x).comp (Ext.mk₀ f) (add_zero n) +
-        (extEquiv F n U.unop x).comp (Ext.mk₀ g) (add_zero n)
-    rw [Ext.mk₀_add, Ext.comp_add]
+    (Sheaf.cohomologyPresheafFunctor.{w} J n).Additive :=
+  flip_additive (Functor.op (freeSheaf J) ⋙ extFunctor.{w} n) fun U ↦
+    inferInstanceAs (extFunctorObj ((freeSheaf J).obj U.unop) n).Additive
 
 def zeroEquiv (F : Sheaf J AddCommGrpCat.{v}) (U : C) : F.H' 0 U ≃+ F.obj.obj (op U) :=
   (extEquiv F 0 U).trans (Ext.addEquiv₀.trans (freeSheafHomEquiv U F))
@@ -104,20 +109,28 @@ lemma zeroEquiv_map {F G : Sheaf J AddCommGrpCat.{v}} (f : F ⟶ G) (U : C) (x :
 
 def terminalEquiv (F : Sheaf J AddCommGrpCat.{v}) (n : ℕ) {T : C} (hT : IsTerminal T) :
     F.H' n T ≃+ F.H n :=
-  (extEquiv F n T).trans
-    (((extFunctor n).mapIso (freeSheafIsoConst (J := J) hT).symm.op).app F).addCommGroupIsoToAddEquiv
+  let e : F.H' n T ≅ AddCommGrpCat.of (F.H n) :=
+    eqToIso (rfl : F.H' n T = ((extFunctor n).obj (op ((freeSheaf J).obj T))).obj F) ≪≫
+      ((extFunctor n).mapIso (freeSheafIsoConst (J := J) hT).symm.op).app F ≪≫
+      eqToIso (rfl : ((extFunctor n).obj
+        (op ((constantSheaf J AddCommGrpCat.{v}).obj (AddCommGrpCat.of (ULift ℤ))))).obj F =
+        AddCommGrpCat.of (F.H n))
+  { toFun := e.hom
+    invFun := e.inv
+    left_inv := e.hom_inv_id_apply
+    right_inv := e.inv_hom_id_apply
+    map_add' := map_add e.hom.hom }
 
 private lemma extFunctorIso_apply {D : Type*} [Category D] [Abelian D] [HasExt.{w} D]
-    {X Y : D} (e : X ≅ Y) (F : D) (n : ℕ) {A : Type*} [Add A]
-    (a : A ≃+ Ext.{w} X F n) (x : A) :
-    (a.trans (((extFunctor n).mapIso e.symm.op).app F).addCommGroupIsoToAddEquiv) x =
-      (Ext.mk₀ e.inv).comp (a x) (zero_add n) := rfl
+    {X Y : D} (e : X ≅ Y) (F : D) (n : ℕ) (x : Ext.{w} X F n) :
+    (((extFunctor n).mapIso e.symm.op).app F).addCommGroupIsoToAddEquiv x =
+      (Ext.mk₀ e.inv).comp x (zero_add n) := rfl
 
 lemma terminalEquiv_apply (F : Sheaf J AddCommGrpCat.{v}) (n : ℕ) {T : C} (hT : IsTerminal T)
     (x : F.H' n T) :
     terminalEquiv F n hT x =
       (Ext.mk₀ (freeSheafIsoConst hT).inv).comp (extEquiv F n T x) (zero_add n) :=
-  extFunctorIso_apply (freeSheafIsoConst hT) F n (extEquiv F n T) x
+  extFunctorIso_apply (freeSheafIsoConst hT) F n (extEquiv F n T x)
 
 private lemma addCommGroupIso_naturality {D : Type*} [Category D]
     {P Q : D ⥤ AddCommGrpCat.{w}} (e : P ≅ Q) {F G : D} (f : F ⟶ G) (x : P.obj F) :
@@ -130,8 +143,7 @@ lemma terminalEquiv_map {F G : Sheaf J AddCommGrpCat.{v}} (f : F ⟶ G) (n : ℕ
     (hT : IsTerminal T) (x : F.H' n T) :
     terminalEquiv G n hT (map f n T x) = Sheaf.H.map f n (terminalEquiv F n hT x) := by
   let e := (extFunctor.{w} n).mapIso (freeSheafIsoConst (J := J) hT).symm.op
-  have h := addCommGroupIso_naturality e f (extEquiv F n T x)
-  exact h
+  exact addCommGroupIso_naturality e f (extEquiv F n T x)
 
 private lemma ext_degree_zero_compare {D : Type*} [Category D] [Abelian D] [HasExt.{w} D]
     {X Y F : D} {A S : Type*} [Add A] [Add S] (e : X ≅ Y)
@@ -159,7 +171,7 @@ lemma equiv₀_terminalEquiv (F : Sheaf J AddCommGrpCat.{v}) {T : C} (hT : IsTer
   intro ψ
   have h₁ := ConcreteCategory.congr_hom (NatTrans.congr_app
     (toSheafify_naturality J (freePresheafIsoConst hT).hom) (op T))
-    (FreeAbelianGroup.of (𝟙 T))
+    (FreeAddCommGroup.of (𝟙 T))
   exact (congrArg (ψ.hom.app (op T)) h₁).trans (freeSheafHomEquiv_comp T e.hom ψ).symm
 
 end GlobalTheory.SiteCoh
@@ -358,7 +370,7 @@ def functorEndRingHom {C : Type u} {D : Type v} [Category C] [Category D]
 
 namespace SiteCoh
 
-variable {C : Type u} [Category.{v} C] {J : GrothendieckTopology C}
+variable {C : Type v} [SmallCategory C] {J : GrothendieckTopology C}
   [HasSheafify J AddCommGrpCat.{v}] [HasExt.{w} (Sheaf J AddCommGrpCat.{v})]
   {F G H : Sheaf J AddCommGrpCat.{v}} {n : ℕ} {U V W : C}
 
@@ -371,11 +383,7 @@ lemma map_comp_apply (f : F ⟶ G) (g : G ⟶ H) (x : F.H' n U) :
 
 lemma map_add_apply (f g : F ⟶ G) (x : F.H' n U) :
     map (f + g) n U x = map f n U x + map g n U x := by
-  change ((Abelian.Ext.mk₀ (f + g)).postcomp _ (add_zero n)) x =
-    ((Abelian.Ext.mk₀ f).postcomp _ (add_zero n)) x +
-      ((Abelian.Ext.mk₀ g).postcomp _ (add_zero n)) x
-  simp [Abelian.Ext.mk₀_add, Abelian.Ext.postcomp]
-  rfl
+  simp only [map, Functor.map_add]; rfl
 
 lemma map_zero_apply (x : F.H' n U) : map (0 : F ⟶ G) n U x = 0 := by
   simp only [map, Functor.map_zero]; rfl
@@ -440,7 +448,8 @@ instance hasSheafify_scheme (X : Scheme.{u}) :
     HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u} := inferInstance
 
 instance hasExt_sheaf_scheme (X : Scheme.{u}) :
-    HasExt.{u} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}) := inferInstance
+    HasExt.{u} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}) :=
+  IsGrothendieckAbelian.hasExt _
 
 def cohOn (F : X.Modules) (U : X.Opens) (n : ℕ) : Type u :=
   Sheaf.H'.{u} ((toAbSheaf (X := X)).obj F) n U
@@ -783,8 +792,9 @@ def toH (F : X.Modules) (n : ℕ) : coh F n ≃+ Sheaf.H.{u} ((toAbSheaf (X := X
 
 lemma toH_map (R : Type v) [CommRing R] [Algebra R Γ(X, ⊤)] {F G : X.Modules} (φ : F ⟶ G)
     (n : ℕ) (x : coh F n) :
-    toH G n (cohOn.map R φ ⊤ n x) = Sheaf.H.map ((toAbSheaf (X := X)).map φ) n (toH F n x) :=
-  SiteCoh.terminalEquiv_map ((toAbSheaf (X := X)).map φ) n isTerminalTop (cohOn.toH' F ⊤ n x)
+    toH G n (cohOn.map R φ ⊤ n x) = Sheaf.H.map ((toAbSheaf (X := X)).map φ) n (toH F n x) := by
+  rw [toH, toH, AddEquiv.trans_apply, AddEquiv.trans_apply, cohOn.toH'_map]
+  exact SiteCoh.terminalEquiv_map ((toAbSheaf (X := X)).map φ) n isTerminalTop (cohOn.toH' F ⊤ n x)
 
 def zeroUnitEquiv (X : Scheme.{u}) :
     coh (structureModule X) 0 ≃ₗ[Γ(X, ⊤)] Γ(X, ⊤) :=
