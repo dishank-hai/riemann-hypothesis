@@ -309,10 +309,13 @@ abbrev restr {j : Y ⟶ X} (hj : Topology.IsOpenEmbedding j) : AbSheaf X ⥤ AbS
   haveI := hj.functor_isContinuous
   hj.functor.sheafPushforwardContinuous AddCommGrpCat.{u} _ _
 
-instance (f : Y ⟶ X) : (push f).IsRightAdjoint :=
-  inferInstanceAs (TopCat.Sheaf.pushforward AddCommGrpCat.{u} f).IsRightAdjoint
+instance (f : Y ⟶ X) [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}] :
+    (push f).IsRightAdjoint :=
+  (Functor.sheafPullbackConstruction.sheafAdjunctionContinuous
+    (Opens.map f) AddCommGrpCat.{u} _ _).isRightAdjoint
 
-instance preservesFiniteLimits_sheafPullback (f : Y ⟶ X) : PreservesFiniteLimits
+instance preservesFiniteLimits_sheafPullback (f : Y ⟶ X)
+    [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}] : PreservesFiniteLimits
     ((Opens.map f).sheafPullback AddCommGrpCat.{u} (Opens.grothendieckTopology X)
       (Opens.grothendieckTopology Y)) := by
   apply Functor.SmallCategories.instPreservesFiniteLimitsSheafSheafPullbackOfRepresentablyFlat
@@ -400,7 +403,10 @@ theorem shortExact_map_push_of_isClosedEmbedding {f : Y ⟶ X} (hf : Topology.Is
   have := hS.epi_g
   shortExact_map_push f hS inferInstance
 
-variable [HasExt.{w} (AbSheaf X)] [HasExt.{w'} (AbSheaf Y)]
+variable [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})]
+  [HasExt.{w'} (Sheaf (Opens.grothendieckTopology Y) AddCommGrpCat.{u})]
 
 abbrev pull (f : Y ⟶ X) {F : AbSheaf X} {G : AbSheaf Y} (φ : F ⟶ (push f).obj G) (n : ℕ)
     {V : Opens X} {W : Opens Y} (i : W ⟶ (Opens.map f).obj V) :
@@ -474,13 +480,15 @@ theorem pushComparison_bijective_of_class (P : AbSheaf Y → Prop)
       exact fun y ↦ ⟨0, @Subsingleton.elim _ this _ _⟩
 
 
-omit [HasExt.{w} (AbSheaf X)] in
+omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
 def HigherDirectImagesVanish (G : AbSheaf Y) : Prop :=
   ∀ (n : ℕ), 0 < n → ∀ (V : Opens X) (α : Sheaf.H'.{w'} G n ((Opens.map f).obj V)), ∀ x ∈ V,
     ∃ (W : Opens X) (i : W ⟶ V), x ∈ W ∧ res G n ((Opens.map f).map i) α = 0
 
 
-omit [HasExt.{w} (AbSheaf X)] in
+omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
 theorem higherDirectImagesVanish_of_basis (G : AbSheaf Y)
     (h : ∀ (V : Opens X), ∀ x ∈ V, ∃ W ≤ V, x ∈ W ∧
       ∀ n, 0 < n → Subsingleton (Sheaf.H'.{w'} G n ((Opens.map f).obj W))) :
@@ -491,7 +499,8 @@ theorem higherDirectImagesVanish_of_basis (G : AbSheaf Y)
 variable {f}
 
 
-omit [HasExt.{w} (AbSheaf X)] in
+omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
 theorem HigherDirectImagesVanish.epi {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
     (h : HigherDirectImagesVanish.{w'} f S.X₁) : Epi ((push f).map S.g) := by
   refine epi_push_map f S.g fun V t x hx ↦ ?_
@@ -503,7 +512,8 @@ theorem HigherDirectImagesVanish.epi {S : ShortComplex (AbSheaf Y)} (hS : S.Shor
 
 
 
-omit [HasExt.{w} (AbSheaf X)] in
+omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
 theorem HigherDirectImagesVanish.quotient {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
     [Injective S.X₂] (h : HigherDirectImagesVanish.{w'} f S.X₁) :
     HigherDirectImagesVanish.{w'} f S.X₃ := by
@@ -550,7 +560,12 @@ lemma exists_hom_injectiveShortComplex (f : Y ⟶ X) {F : AbSheaf X} {G : AbShea
   exists_hom_τ₁_eq (T := (injectiveShortComplex G).map (push f))
     (injectiveShortComplex_shortExact F) φ
 
-variable [HasExt.{w} (AbSheaf X)] [HasExt.{w'} (AbSheaf Y)] [HasExt.{w''} (AbSheaf Z)]
+variable [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
+  [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}]
+  [HasSheafify (Opens.grothendieckTopology Z) AddCommGrpCat.{u}]
+  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})]
+  [HasExt.{w'} (Sheaf (Opens.grothendieckTopology Y) AddCommGrpCat.{u})]
+  [HasExt.{w''} (Sheaf (Opens.grothendieckTopology Z) AddCommGrpCat.{u})]
 
 theorem pull_pull (f : Y ⟶ X) (g : Z ⟶ Y) {F : AbSheaf X} {G : AbSheaf Y} {L : AbSheaf Z}
     (φ : F ⟶ (push f).obj G) (ψ : G ⟶ (push g).obj L) (n : ℕ) {V : Opens X} {W : Opens Y}
