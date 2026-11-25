@@ -52,10 +52,10 @@ def freePresheafIsoConst {T : C} (hT : IsTerminal T) :
   NatIso.ofComponents
     (fun V ↦
       letI : Unique (V.unop ⟶ T) := ⟨⟨hT.from _⟩, fun _ ↦ hT.hom_ext _ _⟩
-      ((FreeAddCommGroup.uniqueEquiv (V.unop ⟶ T)).trans AddEquiv.ulift.symm).toAddCommGrpIso)
+      ((FreeAbelianGroup.uniqueEquiv (V.unop ⟶ T)).trans AddEquiv.ulift.symm).toAddCommGrpIso)
     (fun {V W} f ↦ by
       apply AddCommGrpCat.hom_ext
-      apply FreeAddCommGroup.lift_ext
+      apply FreeAbelianGroup.lift_ext
       intro x
       rfl)
 
@@ -171,7 +171,7 @@ lemma equiv₀_terminalEquiv (F : Sheaf J AddCommGrpCat.{v}) {T : C} (hT : IsTer
   intro ψ
   have h₁ := ConcreteCategory.congr_hom (NatTrans.congr_app
     (toSheafify_naturality J (freePresheafIsoConst hT).hom) (op T))
-    (FreeAddCommGroup.of (𝟙 T))
+    (FreeAbelianGroup.of (𝟙 T))
   exact (congrArg (ψ.hom.app (op T)) h₁).trans (freeSheafHomEquiv_comp T e.hom ψ).symm
 
 end GlobalTheory.SiteCoh
