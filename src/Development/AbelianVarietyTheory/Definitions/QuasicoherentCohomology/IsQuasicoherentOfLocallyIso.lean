@@ -98,7 +98,6 @@ def restrictIsoOfLinear {U : X.Opens}
     fun {_ _} h s => hφ _ (g.image_mono h) s
 
 
-set_option backward.isDefEq.respectTransparency false in
 def overIsoOfRestrictIso {U : X.Opens} (e : F.restrict U.ι ≅ G.restrict U.ι) :
     F.over U ≅ G.over U :=
   (Scheme.Modules.overEquiv U).fullyFaithfulFunctor.preimageIso
@@ -106,7 +105,6 @@ def overIsoOfRestrictIso {U : X.Opens} (e : F.restrict U.ι ≅ G.restrict U.ι)
       ((Scheme.Modules.overFunctorEquiv U).app G).symm)
 
 
-set_option backward.isDefEq.respectTransparency false in
 def generatorsOver {U V : X.Opens} (h : V ≤ U) (σ : (F.over U).GeneratingSections) :
     (F.over V).GeneratingSections :=
   (σ.map (SheafOfModules.overMap X.ringCatSheaf (homOfLE h))
@@ -114,7 +112,6 @@ def generatorsOver {U V : X.Opens} (h : V ≤ U) (σ : (F.over U).GeneratingSect
     ((SheafOfModules.overFunctorMap X.ringCatSheaf (homOfLE h)).app F).hom
 
 
-set_option backward.isDefEq.respectTransparency false in
 def generatorsOfLocallyIso {ι : Type} {U : ι → X.Opens} (hU : ⨆ k, U k = ⊤)
     (e : ∀ (k : ι) (W : X.Opens), W ≤ U k → (F.restrict W.ι ≅ G.restrict W.ι))
     (σ : SheafOfModules.LocalGeneratorsData.{0} F) : SheafOfModules.LocalGeneratorsData.{0} G where
@@ -131,7 +128,6 @@ def generatorsOfLocallyIso {ι : Type} {U : ι → X.Opens} (hU : ⨆ k, U k = �
     (overIsoOfRestrictIso (e p.2 _ inf_le_right)).hom
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isFiniteType_of_locally_iso {ι : Type} {U : ι → X.Opens} (hU : ⨆ k, U k = ⊤)
     (e : ∀ (k : ι) (W : X.Opens), W ≤ U k → (F.restrict W.ι ≅ G.restrict W.ι))
     [hF : F.IsFiniteType] : G.IsFiniteType := by

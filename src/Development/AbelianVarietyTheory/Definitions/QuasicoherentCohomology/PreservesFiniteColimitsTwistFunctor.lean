@@ -697,39 +697,44 @@ theorem le_pull_inf (V : X.Opens) (i : L.ι) :
   fun _ hx => ⟨hx.1, (LB.pull_U f fun _ => i).ge hx.2⟩
 
 
-set_option backward.isDefEq.respectTransparency false in
 def projFun {G : Y.Modules} {V : X.Opens} (s : Γ(twist G (L.pull f), f ⁻¹ᵁ V)) :
     Γ(twist ((Scheme.Modules.pushforward f).obj G) L, V) :=
   mkSec (fun i => resM G (le_pull_inf f V i) (coord s fun _ => i)) fun i j => by
+    let i' : (L.pull f).ι := fun _ => i
+    let j' : (L.pull f).ι := fun _ => j
     have hi : f ⁻¹ᵁ (V ⊓ L.U i ⊓ L.U j) ≤ f ⁻¹ᵁ (V ⊓ L.U i) := f.preimage_mono inf_le_left
     have hj : f ⁻¹ᵁ (V ⊓ L.U i ⊓ L.U j) ≤ f ⁻¹ᵁ (V ⊓ L.U j) :=
       f.preimage_mono (inf_le_inf_right _ inf_le_left)
-    change resM G hi (resM G (le_pull_inf f V i) (coord s fun _ => i)) =
+    change resM G hi (resM G (le_pull_inf f V i) (coord s i')) =
       (f.app (V ⊓ L.U i ⊓ L.U j)).hom (resG X (inf_le_inf_right _ inf_le_right)
         (L.g i j : Γ(X, L.U i ⊓ L.U j))) •
-          resM G hj (resM G (le_pull_inf f V j) (coord s fun _ => j))
-    rw [resM_resM, resM_resM, coord_rel s (fun _ => i) (fun _ => j) _ (hj.trans (le_pull_inf f V j))
+          resM G hj (resM G (le_pull_inf f V j) (coord s j'))
+    rw [resM_resM, resM_resM, coord_rel s i' j' _ (hj.trans (le_pull_inf f V j))
       (le_inf ((hi.trans (le_pull_inf f V i)).trans inf_le_right)
         ((hj.trans (le_pull_inf f V j)).trans inf_le_right)),
       LB.resG_pull_g, ← Scheme.Hom.appLE_eq_app, LB.appLE_resG]
 
 
-set_option backward.isDefEq.respectTransparency false in
 def projInv {G : Y.Modules} {V : X.Opens}
     (s : Γ(twist ((Scheme.Modules.pushforward f).obj G) L, V)) :
     Γ(twist G (L.pull f), f ⁻¹ᵁ V) :=
   mkSec (fun j => resM G (LB.pull_inf_le f V j) (coord s (j PUnit.unit))) fun i j => by
+    let si : Γ(G, f ⁻¹ᵁ (V ⊓ L.U (i PUnit.unit))) := coord s (i PUnit.unit)
+    let sj : Γ(G, f ⁻¹ᵁ (V ⊓ L.U (j PUnit.unit))) := coord s (j PUnit.unit)
     have e : f ⁻¹ᵁ V ⊓ (L.pull f).U i ⊓ (L.pull f).U j ≤
         f ⁻¹ᵁ (V ⊓ L.U (i PUnit.unit) ⊓ L.U (j PUnit.unit)) :=
       inf_le_inf (LB.pull_inf_le f V i) (LB.pull_U_le f j)
-    have h : resM G (f.preimage_mono inf_le_left) (coord s (i PUnit.unit)) =
+    have h : resM G (f.preimage_mono inf_le_left) si =
         (f.app (V ⊓ L.U (i PUnit.unit) ⊓ L.U (j PUnit.unit))).hom
           (resG X (inf_le_inf_right _ inf_le_right) (L.g (i PUnit.unit) (j PUnit.unit) :
             Γ(X, L.U (i PUnit.unit) ⊓ L.U (j PUnit.unit)))) •
-          resM G (f.preimage_mono (inf_le_inf_right _ inf_le_left)) (coord s (j PUnit.unit)) :=
+          resM G (f.preimage_mono (inf_le_inf_right _ inf_le_left)) sj :=
       coord_mem s (i PUnit.unit) (j PUnit.unit)
     have := congrArg (resM G e) h
     rw [resM_smul, resM_resM, resM_resM, LB.resG_app, LB.appLE_resG] at this
+    change resM G _ (resM G (LB.pull_inf_le f V i) si) =
+      resG Y _ ((L.pull f).g i j : Γ(Y, (L.pull f).U i ⊓ (L.pull f).U j)) •
+        resM G _ (resM G (LB.pull_inf_le f V j) sj)
     rw [resM_resM, resM_resM, LB.resG_pull_g]
     exact this
 

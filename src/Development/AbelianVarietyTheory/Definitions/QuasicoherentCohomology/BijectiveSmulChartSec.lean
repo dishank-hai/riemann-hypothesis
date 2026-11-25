@@ -437,7 +437,6 @@ def chartIso (hL : L.IsLB) (i : L.ι) :
   Descent.freeIso (Descent.bijective_smul_stalk (bijective_smul_chartSec hL i))
 
 
-set_option backward.isDefEq.respectTransparency false in
 def chartOverIso (hL : L.IsLB) (i : L.ι) :
     SheafOfModules.free (R := X.ringCatSheaf.over (L.U i)) PUnit.{1} ≅ (toMod L).over (L.U i) :=
   let e := Scheme.Modules.overEquiv (L.U i)
@@ -448,7 +447,6 @@ def chartOverIso (hL : L.IsLB) (i : L.ι) :
       (e.unitIso.app ((toMod L).over (L.U i))).symm
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isIso_ofEpi_π.{v, u} {C : Type u} [Category.{v} C] {J : GrothendieckTopology C}
     {R : Sheaf J RingCat.{0}} [HasWeakSheafify J AddCommGrpCat.{0}]
     [J.WEqualsLocallyBijective AddCommGrpCat.{0}] {M : SheafOfModules.{0} R} {I : Type}
@@ -458,7 +456,6 @@ theorem isIso_ofEpi_π.{v, u} {C : Type u} [Category.{v} C] {J : GrothendieckTop
   exact inferInstanceAs (IsIso (𝟙 (SheafOfModules.free I) ≫ e.hom))
 
 
-set_option backward.isDefEq.respectTransparency false in
 def generatorsOfIso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i, U i = ⊤)
     (e : ∀ i, SheafOfModules.free (R := X.ringCatSheaf.over (U i)) PUnit.{1} ≅ F.over (U i)) :
     SheafOfModules.LocalGeneratorsData.{0} F where
@@ -470,7 +467,6 @@ def generatorsOfIso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i
   generators i := (SheafOfModules.free.generatingSections PUnit.{1}).ofEpi (e i).hom
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isLocallyFree_of_iso {F : X.Modules} {ι : Type} {U : ι → X.Opens} (hU : ⨆ i, U i = ⊤)
     (e : ∀ i, SheafOfModules.free (R := X.ringCatSheaf.over (U i)) PUnit.{1} ≅ F.over (U i)) :
     F.IsLocallyFree ∧ F.IsFiniteType :=
@@ -482,10 +478,9 @@ theorem isLocallyFree_toMod (hL : L.IsLB) : (toMod L).IsLocallyFree :=
   (isLocallyFree_of_iso hL.cover (chartOverIso hL)).1
 
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isQuasicoherent_toMod (hL : L.IsLB) : (toMod L).IsQuasicoherent :=
-  haveI := isLocallyFree_toMod hL
-  inferInstance
+  have ⟨q, _⟩ := (isLocallyFree_toMod hL).exists_isLocallyFreeData
+  q.quasiCoherentData.isQuasicoherent
 
 theorem isFiniteType_toMod (hL : L.IsLB) : (toMod L).IsFiniteType :=
   (isLocallyFree_of_iso hL.cover (chartOverIso hL)).2
