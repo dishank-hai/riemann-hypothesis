@@ -403,6 +403,45 @@ theorem shortExact_map_push_of_isClosedEmbedding {f : Y ⟶ X} (hf : Topology.Is
   have := hS.epi_g
   shortExact_map_push f hS inferInstance
 
+section HigherDirectImages
+
+variable [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}]
+  [HasExt.{w'} (Sheaf (Opens.grothendieckTopology Y) AddCommGrpCat.{u})]
+  (f : Y ⟶ X)
+
+def HigherDirectImagesVanish (G : AbSheaf Y) : Prop :=
+  ∀ (n : ℕ), 0 < n → ∀ (V : Opens X) (α : Sheaf.H'.{w'} G n ((Opens.map f).obj V)), ∀ x ∈ V,
+    ∃ (W : Opens X) (i : W ⟶ V), x ∈ W ∧ res G n ((Opens.map f).map i) α = 0
+
+theorem higherDirectImagesVanish_of_basis (G : AbSheaf Y)
+    (h : ∀ (V : Opens X), ∀ x ∈ V, ∃ W ≤ V, x ∈ W ∧
+      ∀ n, 0 < n → Subsingleton (Sheaf.H'.{w'} G n ((Opens.map f).obj W))) :
+    HigherDirectImagesVanish.{w'} f G := fun n hn V _ x hx ↦ by
+  obtain ⟨W, hWV, hx, hW⟩ := h V x hx
+  exact ⟨W, homOfLE hWV, hx, @Subsingleton.elim _ (hW n hn) _ _⟩
+
+variable {f}
+
+theorem HigherDirectImagesVanish.epi {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
+    (h : HigherDirectImagesVanish.{w'} f S.X₁) : Epi ((push f).map S.g) := by
+  refine epi_push_map f S.g fun V t x hx ↦ ?_
+  obtain ⟨W, i, hW, h0⟩ := h 1 one_pos V (δ hS 0 _ ((equivZero _ _).symm t)) x hx
+  refine ⟨W, i, hW, (δ_equivZero_symm_eq_zero_iff.{w'} hS _ _).1 ?_⟩
+  rw [← h0, δ_res]
+  congr 1
+  rw [AddEquiv.symm_apply_eq, equivZero_res, AddEquiv.apply_symm_apply]
+
+theorem HigherDirectImagesVanish.quotient {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
+    [Injective S.X₂] (h : HigherDirectImagesVanish.{w'} f S.X₁) :
+    HigherDirectImagesVanish.{w'} f S.X₃ := by
+  intro n hn V α x hx
+  obtain ⟨W, i, hW, h0⟩ := h (n + 1) n.succ_pos V (δ hS n _ α) x hx
+  obtain ⟨n, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hn.ne'
+  refine ⟨W, i, hW, δ_injective_of_subsingleton hS _ _ (subsingleton_H'_of_injective _ n _) ?_⟩
+  rw [← δ_res, h0, map_zero]
+
+end HigherDirectImages
+
 variable [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
   [HasSheafify (Opens.grothendieckTopology Y) AddCommGrpCat.{u}]
   [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})]
@@ -479,49 +518,7 @@ theorem pushComparison_bijective_of_class (P : AbSheaf Y → Prop)
       have := subsingleton_H'_of_injective.{w'} (Injective.under G) n ((Opens.map f).obj V)
       exact fun y ↦ ⟨0, @Subsingleton.elim _ this _ _⟩
 
-
-omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
-  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-def HigherDirectImagesVanish (G : AbSheaf Y) : Prop :=
-  ∀ (n : ℕ), 0 < n → ∀ (V : Opens X) (α : Sheaf.H'.{w'} G n ((Opens.map f).obj V)), ∀ x ∈ V,
-    ∃ (W : Opens X) (i : W ⟶ V), x ∈ W ∧ res G n ((Opens.map f).map i) α = 0
-
-
-omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
-  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-theorem higherDirectImagesVanish_of_basis (G : AbSheaf Y)
-    (h : ∀ (V : Opens X), ∀ x ∈ V, ∃ W ≤ V, x ∈ W ∧
-      ∀ n, 0 < n → Subsingleton (Sheaf.H'.{w'} G n ((Opens.map f).obj W))) :
-    HigherDirectImagesVanish.{w'} f G := fun n hn V _ x hx ↦ by
-  obtain ⟨W, hWV, hx, hW⟩ := h V x hx
-  exact ⟨W, homOfLE hWV, hx, @Subsingleton.elim _ (hW n hn) _ _⟩
-
 variable {f}
-
-
-omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
-  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-theorem HigherDirectImagesVanish.epi {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
-    (h : HigherDirectImagesVanish.{w'} f S.X₁) : Epi ((push f).map S.g) := by
-  refine epi_push_map f S.g fun V t x hx ↦ ?_
-  obtain ⟨W, i, hW, h0⟩ := h 1 one_pos V (δ hS 0 _ ((equivZero _ _).symm t)) x hx
-  refine ⟨W, i, hW, (δ_equivZero_symm_eq_zero_iff.{w'} hS _ _).1 ?_⟩
-  rw [← h0, δ_res]
-  congr 1
-  rw [AddEquiv.symm_apply_eq, equivZero_res, AddEquiv.apply_symm_apply]
-
-
-
-omit [HasSheafify (Opens.grothendieckTopology X) AddCommGrpCat.{u}]
-  [HasExt.{w} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u})] in
-theorem HigherDirectImagesVanish.quotient {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)
-    [Injective S.X₂] (h : HigherDirectImagesVanish.{w'} f S.X₁) :
-    HigherDirectImagesVanish.{w'} f S.X₃ := by
-  intro n hn V α x hx
-  obtain ⟨W, i, hW, h0⟩ := h (n + 1) n.succ_pos V (δ hS n _ α) x hx
-  obtain ⟨n, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hn.ne'
-  refine ⟨W, i, hW, δ_injective_of_subsingleton hS _ _ (subsingleton_H'_of_injective _ n _) ?_⟩
-  rw [← δ_res, h0, map_zero]
 
 theorem pushComparison_bijective {G : AbSheaf Y} (h : HigherDirectImagesVanish.{w'} f G) (n : ℕ)
     (V : Opens X) : Function.Bijective (pushComparison.{w, w'} f G n V) :=
