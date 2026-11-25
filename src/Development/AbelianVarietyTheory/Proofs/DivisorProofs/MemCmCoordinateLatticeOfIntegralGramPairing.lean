@@ -403,8 +403,6 @@ structure CxFib (σ : K →+* ℂ) where
 
 attribute [instance] CxFib.grp
 
-
-
 end GenFib
 
 section Sum
@@ -1084,18 +1082,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open scoped CategoryTheory.Obj
 
 noncomputable section
-namespace GlobalTheory.TorsionKill
-
-theorem eq_of_pullback_eq {S S' : Scheme.{0}} (t : S' ⟶ S) [IsSchemeTheoreticallyDominant t]
-    [QuasiCompact t] {Y X : Over S} [Flat Y.hom] [IsSeparated X.hom] {a b : Y ⟶ X}
-    (h : (Over.pullback t).map a = (Over.pullback t).map b) : a = b := by
-  apply Over.OverMorphism.ext
-  refine GlobalTheory.KernelNoTorsion.eq_of_isSchemeTheoreticallyDominant X.hom ((Over.w a).trans (Over.w b).symm)
-    (pullback.fst Y.hom t) ?_
-  have h' := congr(($h).left ≫ pullback.fst X.hom t)
-  exact (pullback.lift_fst _ _ _).symm.trans (h'.trans (pullback.lift_fst _ _ _))
-
-end GlobalTheory.TorsionKill
 
 noncomputable section
 namespace GlobalTheory.TorsionKill
@@ -1132,13 +1118,6 @@ noncomputable section
 
 namespace GlobalTheory.FlatCM.TorsGen
 
-theorem exists_linear_pow_eq : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E)
-    (K : Type) [Field K] [NumberField K] (σ : K →+* ℂ) (A B : GlobalTheory.CM.PAT H (Sp (𝓞 K))) (G : A.t.G ⟶ B.t.G),
-    GlobalTheory.Serre.IsLinearHom A.t.act B.t.act G → ∀ m : ℕ, 0 < m →
-    (∀ x : Over.mk (spMap (σ.comp (algebraMap (𝓞 K) K))) ⟶ A.t.G, x ^ m = 1 → x ≫ G = 1) →
-    ∃ F : A.t.G ⟶ B.t.G, GlobalTheory.Serre.IsLinearHom A.t.act B.t.act F ∧ F ^ m = G := by
-  apply _root_.GlobalTheory.DivisibleLinear.exists_linear_pow_eq <;> assumption
-
 theorem gen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : ReciprocityTheory.ChartRestriction.G.Geo.Tor.Host E),
     GlobalTheory.IndefiniteRowSideFullHecke.EigenvectorLieDegree.IsHostField H → ∀ (K : Type) [Field K] [NumberField K] (ρ : 𝓞 K) (σ₁ : K →+* ℂ) (p : ℕ)
     (X : GlobalTheory.CM.CMObj H K ρ σ₁ p 0) (n : ℕ), 0 < n →
@@ -1151,7 +1130,7 @@ theorem gen : ∀ (E : Type) [Field E] [NumberField E] [IsCMField E] (H : Recipr
   intro E _ _ _ H hH K _ _ ρ σ₁ p X n hn y hy
   refine Submonoid.closure_mono ?_ (GlobalTheory.T.cm_torsion_mem_closure_generators E H hH K ρ σ₁ p X n hn y hy)
   rintro w ⟨m, x, z, hm, hx, hG, rfl⟩
-  obtain ⟨F, hF, hFm⟩ := exists_linear_pow_eq E H K σ₁ (X.A true) X.B _
+  obtain ⟨F, hF, hFm⟩ := GlobalTheory.DivisibleLinear.exists_linear_pow_eq E H K σ₁ (X.A true) X.B _
     (GlobalTheory.FlatCM.HomLat.isLinearHom_prod X z) m hm hG
   have := hF.isMonHom
   refine ⟨x ^ m, F, ?_, hF, ⟨m, hm, z, hFm⟩, ?_⟩

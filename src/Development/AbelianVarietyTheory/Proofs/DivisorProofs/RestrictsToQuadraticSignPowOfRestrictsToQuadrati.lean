@@ -27,11 +27,7 @@ open scoped TensorProduct ComplexConjugate in
 private theorem isUnit_of_isUnit_norm' {R S : Type} [CommRing R] [CommRing S] [Algebra R S]
     [Module.Free R S] [Module.Finite R S] (z : S) (h : IsUnit (Algebra.norm R z)) : IsUnit z := by
   rw [Algebra.norm_apply, ← LinearMap.isUnit_iff_isUnit_det] at h
-  obtain ⟨u, hu⟩ := h
-  refine IsUnit.of_mul_eq_one (u.inv 1) ?_
-  have := congrArg (fun f : Module.End R S => f 1) u.val_inv
-  simp only [hu] at this
-  simpa using this
+  exact Algebra.lmul_isUnit_iff.mp h
 
 
 open IsDedekindDomain NumberField MeasureTheory Matrix in

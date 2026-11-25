@@ -1629,12 +1629,12 @@ theorem rl_levels (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCM
     (Mb : Mods E b) (K₁ : Subgroup (GL (Fin a) (Af E))) (K₂ : Subgroup (GL (Fin b) (Af E)))
     (h1 : IsOpen (K₁ : Set (GL (Fin a) (Af E)))) (h2 : IsOpen (K₂ : Set (GL (Fin b) (Af E)))) :
     Levels E (rlΘ₁ hR E a b Ma Mb K₁ K₂) ∧ Levels E (rlΘ₂ hR E a b Ma Mb K₁ K₂) :=
-  (hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.2.1 a b Ma Mb K₁ K₂ h1 h2
+  (rl_spec hR E).2.1 a b Ma Mb K₁ K₂ h1 h2
 
 theorem rl_ktypes (hR : Rd.ReadLimit) (E : Type) [Field E] [NumberField E] [IsCMField E] (a b : ℕ) (Ma : Mods E a)
     (Mb : Mods E b) : KTypes E (rlΩ₁ hR E a b Ma Mb) ∧ KTypes E (rlΩ₂ hR E a b Ma Mb) :=
-  ⟨((hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.1 a b Ma Mb).2.2.1,
-    ((hR E).choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.choose_spec.1 a b Ma Mb).2.2.2.1⟩
+  ⟨((rl_spec hR E).1 a b Ma Mb).2.2.1,
+    ((rl_spec hR E).1 a b Ma Mb).2.2.2.1⟩
 
 theorem ub_fin {α ι : Type} [Fintype ι] {κ : ι → Type} [∀ i, Fintype (κ i)] (T : Finset α) (f : ∀ i, κ i → α → ℕ) :
     ∃ m, ∀ i k, ∀ w ∈ T, f i k w ≤ m := by

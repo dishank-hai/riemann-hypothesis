@@ -288,9 +288,13 @@ theorem term_eq_termAt (G : HTGroup p) (P : DPair G) (Kf : Subgroup G.GAf) (f : 
     apply Subtype.ext
     apply Prod.ext
     · have e : x₀ = (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1 * x := by rw [hgx, inv_mul_cancel_right]
-      simp only [DPair.toAf, MonoidHom.comp_apply, MonoidHom.codRestrict_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, inv_inv, Subgroup.coe_mul, Subgroup.coe_inv, Prod.fst_mul, Prod.fst_inv, MonoidHom.prodMap, MonoidHom.prod_apply, Subgroup.coe_subtype]
+      show x₀ * Units.map (inC G (AfP p)).toMonoidHom y.1.1 * x₀⁻¹ =
+        (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1 * (x * Units.map (inC G (AfP p)).toMonoidHom y.1.1 * x⁻¹) *
+          (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1⁻¹
       rw [e]; group
-    · simp only [DPair.toAf, MonoidHom.comp_apply, MonoidHom.codRestrict_apply, MulEquiv.coe_toMonoidHom, MulAut.conj_apply, inv_inv, Subgroup.coe_mul, Subgroup.coe_inv, Prod.snd_mul, Prod.snd_inv, MonoidHom.prodMap, MonoidHom.prod_apply, Subgroup.coe_subtype]
+    · show Units.map (algebraMap ℚ (AfP p)).toMonoidHom y.1.2 =
+        (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).2 * Units.map (algebraMap ℚ (AfP p)).toMonoidHom y.1.2 *
+          (g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).2⁻¹
       rw [mul_comm, inv_mul_cancel_left]
   have hQr : P.toQr r z₀ = (MulAut.conj g₂⁻¹).toMonoidHom.comp (P.toQr r z) := by
     ext y : 1

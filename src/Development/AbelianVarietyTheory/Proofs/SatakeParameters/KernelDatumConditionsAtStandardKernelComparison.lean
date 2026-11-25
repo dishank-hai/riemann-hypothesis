@@ -114,7 +114,6 @@ open Formalism.InvariantFactorPaths.G7 (UnrOK IsLawOfLog cob)
 
 namespace GlobalTheory.KerStd.HostInert
 
-
 open Formalism.InvariantFactorPaths.G7 (lgF at1) in
 open Formalism.L2.G.Pend (k0ToC wittFractionAlgebraCp) in
 theorem inParamK_eq {l : ℕ} [Fact l.Prime] {ι : Type} (f : MvPowerSeries ι ℂ_[l]) :
@@ -570,9 +569,6 @@ theorem embT_mem (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : TaylorLogMetric.
   have : IsAlgebraic ℚ ((TaylorLogMetric.embT D τ).toRatAlgHom x) := hx.algHom _
   exact (mem_algebraicClosure_iff).2 this
 
-theorem atLin_X {σ κ : Type} [Fintype κ] {p : ℕ} [Fact p.Prime] (c : σ → κ → ℂ_[p]) (F : MvPowerSeries σ ℂ_[p]) :
-    TaylorLogMetric.atLin c (fun j => MvPowerSeries.X j) F = Formalism.L2.Th1.G.linSub c F := rfl
-
 theorem tauEmb_eq {D : D7} {p : ℕ} [Fact p.Prime] {lm : TaylorLogMetric.Qbar →+* ℂ_[p]} {ι : ℂ ≃+* ℂ_[p]}
     (hι : Formalism.L2.KerInert.IotaExt lm ι) (τ : D.what₂.Tau) (x : D.host.E) :
     TaylorLogMetric.tauEmb D lm τ x = ι (TaylorLogMetric.embT D τ x) := by
@@ -692,7 +688,7 @@ theorem GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d.jetsA
       ∑ k, MvPowerSeries.C (r k) * TaylorLogMetric.atLin c (fun j => MvPowerSeries.X j) (G k) := by
     intro c G
 
-    rw [GlobalTheory.Proof.integralJets_normalisedThetaCombinations_away_d.atLin_X, ← Formalism.L2.Th1.G.linSubHom_apply, map_sum]
+    rw [GlobalTheory.Proof.shape_normalisedThetaCombinations_dualBases_at_d.atLin_X, ← Formalism.L2.Th1.G.linSubHom_apply, map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [map_mul, AlgHom.commutes, Formalism.L2.Th1.G.linSubHom_apply]
     rfl
@@ -1242,11 +1238,6 @@ namespace GlobalTheory.KerJ.CharVal
 
 open Formalism.BasicNotions Formalism.MainNotions Formalism.MainNotions.TaylorLogMetric Formalism.MainNotions.GL3Theta NumberField
 
-theorem embT_mem (D : D7) (τ : D.what₂.Tau) (x : D.host.E) : embT D τ x ∈ Qbar := by
-  have hx : IsAlgebraic ℚ x := Algebra.IsAlgebraic.isAlgebraic x
-  have : IsAlgebraic ℚ ((embT D τ).toRatAlgHom x) := hx.algHom _
-  exact (mem_algebraicClosure_iff).2 this
-
 theorem chi_pow (D : D7) (t : D.Dt) (h : ℕ) (z : letI := D.host.cmStar; unitary D.host.E)
     (hp : PowRat D t h z) :
     ((D.chiD t : ℂˣ) : ℂ) ^ h = ∏ τ, (embT D τ (z : D.host.E))⁻¹ := by
@@ -1260,20 +1251,20 @@ theorem chi_mem (D : D7) (t : D.Dt) (h : ℕ) (z : letI := D.host.cmStar; unitar
     (hp : PowRat D t h z) : ((D.chiD t : ℂˣ) : ℂ) ∈ Qbar := by
   have h0 : ((D.chiD t : ℂˣ) : ℂ) ^ h ∈ Qbar := by
     rw [chi_pow D t h z hp]
-    exact prod_mem fun τ _ => inv_mem (embT_mem D τ _)
+    exact prod_mem fun τ _ => inv_mem (GlobalTheory.KerJ.RhoThree.embT_mem D τ _)
   exact (mem_algebraicClosure_iff).2 (((mem_algebraicClosure_iff).1 h0).of_pow hp.1)
 
 theorem chiVal_holds (D : D7) : chiVal D := by
   intro p _ lam t h z hp
   refine ⟨chi_pow D t h z hp, ?_⟩
   have hm := chi_mem D t h z hp
-  have e : (⟨((D.chiD t : ℂˣ) : ℂ), hm⟩ : Qbar) ^ h = ∏ τ, (⟨embT D τ (z : D.host.E), embT_mem D τ _⟩ : Qbar)⁻¹ := by
+  have e : (⟨((D.chiD t : ℂˣ) : ℂ), hm⟩ : Qbar) ^ h = ∏ τ, (⟨embT D τ (z : D.host.E), GlobalTheory.KerJ.RhoThree.embT_mem D τ _⟩ : Qbar)⁻¹ := by
     apply Subtype.ext
     push_cast
     exact chi_pow D t h z hp
   rw [Formalism.L2.KerInert.ie_lamC_of_mem lam hm, ← norm_pow, ← map_pow, e, map_prod, norm_prod]
   refine Finset.prod_congr rfl fun τ _ => ?_
-  rw [map_inv₀, norm_inv, Formalism.L2.KerInert.ie_lamC_of_mem lam (embT_mem D τ _)]
+  rw [map_inv₀, norm_inv, Formalism.L2.KerInert.ie_lamC_of_mem lam (GlobalTheory.KerJ.RhoThree.embT_mem D τ _)]
 
 theorem key_norm {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) {ι : Type*} [Fintype ι] (y κ : Qbar) (w : ι → Qbar)
     (s : ι → ℤ) (h n : ℕ) (hn : 0 < n) (e : y ^ h = (∏ τ, w τ ^ s τ) * κ) (hκ : κ ^ n = 1) :
@@ -1297,7 +1288,7 @@ theorem val_of (D : D7) (ρ : D.Dt →* ℂˣ) (s : D.what₂.Tau → ℤ) {p : 
     (mem_algebraicClosure_iff).2 (((mem_algebraicClosure_iff).1 (h1' ▸ one_mem Qbar)).of_pow hn)
   have e2 : ((ρ t : ℂˣ) : ℂ) ^ h = (∏ τ, (embT D τ (z : D.host.E)) ^ (s τ)) * ((ρ k : ℂˣ) : ℂ) := by
     rw [← hz, ← Units.val_pow_eq_pow_val, ← Units.val_mul, ← map_pow, e, map_mul]
-  have := key_norm lam (⟨_, ha⟩ : Qbar) ⟨_, hkm⟩ (fun τ => ⟨embT D τ (z : D.host.E), embT_mem D τ _⟩) s h n hn
+  have := key_norm lam (⟨_, ha⟩ : Qbar) ⟨_, hkm⟩ (fun τ => ⟨embT D τ (z : D.host.E), GlobalTheory.KerJ.RhoThree.embT_mem D τ _⟩) s h n hn
     (by
       apply (algebraMap Qbar ℂ).injective
       simp only [map_pow, map_mul, map_prod, map_zpow₀]
@@ -1307,7 +1298,7 @@ theorem val_of (D : D7) (ρ : D.Dt →* ℂˣ) (s : D.what₂.Tau → ℤ) {p : 
       simp only [map_pow, map_one]
       exact h1')
   rw [Formalism.L2.KerInert.ie_lamC_of_mem lam ha, this]
-  exact Finset.prod_congr rfl fun τ _ => by rw [Formalism.L2.KerInert.ie_lamC_of_mem lam (embT_mem D τ _)]
+  exact Finset.prod_congr rfl fun τ _ => by rw [Formalism.L2.KerInert.ie_lamC_of_mem lam (GlobalTheory.KerJ.RhoThree.embT_mem D τ _)]
 
 theorem rhoVal_holds (D : D7) {u : D.what₂.Word} (C : ColumnChain D.R D.what₂.Tau (D.hcW u)) (mt : ℕ → D.Dt →* ℂˣ)
     (hR : rhoThreeOf D C mt) : rhoValOf D C mt := by
@@ -1378,10 +1369,10 @@ theorem nu_pow (𝔞 : Submodule (𝓞 E) E) (h : ℕ) (h0 : h ≠ 0) (z : E)
 end Nu
 
 noncomputable def psiT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) : D.host.E →+* ℂ_[p] :=
-  lam.comp ((embT D τ).codRestrict Qbar (embT_mem D τ))
+  lam.comp ((embT D τ).codRestrict Qbar (GlobalTheory.KerJ.RhoThree.embT_mem D τ))
 
 theorem lamC_embT (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) (x : D.host.E) :
-    lamC lam (embT D τ x) = psiT D lam τ x := Formalism.L2.KerInert.ie_lamC_of_mem lam (embT_mem D τ x)
+    lamC lam (embT D τ x) = psiT D lam τ x := Formalism.L2.KerInert.ie_lamC_of_mem lam (GlobalTheory.KerJ.RhoThree.embT_mem D τ x)
 
 theorem nrmId_pow (D : D7) {p : ℕ} [Fact p.Prime] (lam : Qbar →+* ℂ_[p]) (τ : D.what₂.Tau) (𝔞 : IdE D) (h : ℕ) (h0 : h ≠ 0)
     (z : D.host.E) (e : 𝔞 ^ h = Submodule.span (𝓞 D.host.E) {z}) :
@@ -1536,7 +1527,6 @@ theorem mtType_stdO {B : Base} {X : PreX B.toPre} (I : TC B X) (hok : I.Ok) (hp 
 
 end GlobalTheory.Pdv.UnStd
 
-
 open GlobalTheory.Pdv.UnStd in
 theorem GlobalTheory.Pdv.unUnit_stdKer : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), I.Ok → TC.Pins B X → ∀ (l : I.Laws) (Z : TC.Later B (I.cols l)), ∀ (L : SizeData₂ (I.rec7 l Z)) (hT : GatTies (I.rec7 l Z)) (Gi : G.Inst (I.rec7 l Z) L) (Gl : G.LatInst (I.rec7 l Z)) (K : G.Consts) (Y : DivX (I.rec7 l Z)) (cX : ExtraC) (ex : Extra (I.rec7 l Z) L hT Gi Gl K Y cX) (t : KerEntTied ex), I.StdKer l Z t → t.ent.UnUnit := by
   intro B X I hok hp l Z L hT Gi Gl K Y cX ex t hs
@@ -1588,7 +1578,6 @@ section -- clump:auto
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.MainNotions Formalism.L2.Col Formalism.L2.DIV Formalism.L2.Ker Formalism.UG Formalism.L2.Forms GlobalTheory.Mem GlobalTheory.Mem.Chr GlobalTheory.Mem.Col2 GlobalTheory.Mem.Col2.TC Matrix
 
 namespace GlobalTheory.Pdv
-
 
 theorem colNorm_of_tw : ∀ {B : Base} {X : PreX B.toPre} (I : TC B X), (∀ a, I.cst a = twCst I.Ch I.sel (I.tup a) I.glob ∧ I.idx a = twIdx I.Ch I.sel (I.tup a) (I.cst a) (B.R.m - 2)) → GlobalTheory.Pdv.ColNorm I := by
   intro B X I H a

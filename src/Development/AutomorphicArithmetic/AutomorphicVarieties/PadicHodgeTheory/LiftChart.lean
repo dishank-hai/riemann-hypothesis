@@ -920,14 +920,6 @@ section -- clump:auto
 
 open Formalism.ConjugateSelfDual ReciprocityTheory.Gal Module UpperTheory.V.Loc UpperTheory.V.Alg UpperTheory.V.GradeZeroInterpolatingElement UpperTheory.V.HV UpperTheory.V.Base IsLocalRing
 
-private theorem coeff_single_mul {E σ : Type} [CommRing E] (i : σ) (f g : MvPowerSeries σ E) :
-    MvPowerSeries.coeff (Finsupp.single i 1) (f * g) =
-      MvPowerSeries.constantCoeff f * MvPowerSeries.coeff (Finsupp.single i 1) g +
-      MvPowerSeries.constantCoeff g * MvPowerSeries.coeff (Finsupp.single i 1) f := by
-  classical
-  rw [MvPowerSeries.coeff_mul, Finsupp.antidiagonal_single, Finset.sum_map]
-  simp [Finset.Nat.antidiagonal_succ, mul_comm]
-
 private theorem hasWeight_of_generators {O R X Q : Type} [CommRing O] [CommRing R] [Algebra O R] [AddCommGroup X] [Module.Free ℤ X]
     [Module.Finite ℤ X] (W : WPres O X R) (h : W.HasOrigin) [AddCommGroup Q] [Module O Q] (D : R →ₗ[O] Q)
     (hD : D ∈ PtDer (W.origin h) Q) (j : X) (hz : ∀ s, W.wt s ≠ j → D (W.z s) = 0) : HasWt W.part j D := by
@@ -944,7 +936,7 @@ private theorem hasWeight_of_generators {O R X Q : Type} [CommRing O] [CommRing 
   have h0 := (der_extend O _ X W' h' Q).2 D' (fun f g => by
     have h1 : D (W.π f * W.π g) = W.origin h (W.π f) • D (W.π g) + W.origin h (W.π g) • D (W.π f) := hD _ _
     rw [hD', hD', hD', ho, ho, map_mul, h1, W.origin_π, W.origin_π]
-    simp only [coeff_single_mul, add_smul, mul_smul, Finset.sum_add_distrib, smul_sub, Finset.smul_sum]
+    simp only [gc_coeff_single_mul, add_smul, mul_smul, Finset.sum_add_distrib, smul_sub, Finset.smul_sum]
     abel) (fun (s : W.σ) => by
     show D' (MvPowerSeries.X s) = 0
     rw [hD']

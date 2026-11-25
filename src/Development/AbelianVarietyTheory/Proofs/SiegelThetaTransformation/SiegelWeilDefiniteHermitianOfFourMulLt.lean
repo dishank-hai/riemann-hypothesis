@@ -68,15 +68,6 @@ theorem moves_unique {h : Matrix (Fin n) (Fin n) E} (hu : ccT h * h = 1) {B X Y 
   have key := (h1 (ccT h *ᵥ w)).symm.trans (h2 (ccT h *ᵥ w))
   rwa [hw] at key
 
-private theorem one_mem_UJset' {M : ℕ} : (1 : Matrix (Fin n) (Fin n) E) ∈ DH E n M := by
-  refine ⟨?_, 1, one_pos, Nat.coprime_one_left _, 0, fun k i => ?_, by simp⟩
-  · have h1 : ccT (1 : Matrix (Fin n) (Fin n) E) = 1 := by
-      unfold ccT
-      rw [Matrix.map_one _ (by simp [cc]) (by simp [cc]), Matrix.transpose_one]
-    rw [h1, mul_one]
-  · rw [Matrix.zero_apply]
-    exact isIntegral_zero
-
 private theorem eq_one_of_mem_DH_zero {h : Matrix (Fin n) (Fin n) E} (hh : h ∈ DH E n 0) : h = 1 := by
   obtain ⟨-, s, -, hs, y, -, e⟩ := hh
   rw [(Nat.coprime_zero_right _).1 hs] at e
@@ -215,7 +206,7 @@ private theorem exists_moves_of_cls_eq {M : ℕ} {a b : Vset E n M}
   clear e
   induction hq with
   | rel x y hxy => exact hxy
-  | refl x => exact ⟨1, one_mem_UJset', fun v => by rw [Matrix.one_mulVec]⟩
+  | refl x => exact ⟨1, Base.one_mem_DH _, fun v => by rw [Matrix.one_mulVec]⟩
   | symm x y _ ih =>
     obtain ⟨h, hh, m⟩ := ih
     exact ⟨ccT h, (eq_mul_div_mul_mul_inv_of_mul_inv_mul_eq hh).1, Nbr.move_inv (mul_eq_one_comm.1 hh.1) m⟩

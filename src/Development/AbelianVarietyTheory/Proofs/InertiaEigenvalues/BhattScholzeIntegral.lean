@@ -128,7 +128,7 @@ theorem realises_of_mreal : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK
     rw [hj, LinearEquiv.apply_symm_apply]
 
   have hbc : SemiBC j := by
-    letI := hU.unit.invertible
+    let := hU.unit.invertible
     let c := (Pi.basisFun (WCb l) (Fin d)).map ((Matrix.toLinearEquiv' U this).trans (b.baseChange (WCb l)).equivFun.symm)
     refine _root_.GlobalTheory.BSP.semiBC_of_basis _ _ _ _ _ j (Fin d) b₀ c fun i => ?_
     apply (b.baseChange (WCb l)).equivFun.injective
@@ -150,8 +150,8 @@ theorem realises_of_mreal : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK
       simp_rw [← hb₀]; exact (b₀.sum_equivFun x).symm
     rw [hx] at hfr
     obtain ⟨r, hr⟩ := _root_.GlobalTheory.BSP.frob_tr_basis l K bk d M e S.a S.A hF.Φ (ainfObj K) bk.ι d₀ (b₀.equivFun x) m k hfr
-    haveI : IsDomain (ainfObj K).A := (ainfId K).toMulEquiv.isDomain
-    haveI := Module.Free.of_basis b₀
+    have : IsDomain (ainfObj K).A := (ainfId K).toMulEquiv.isDomain
+    have := Module.Free.of_basis b₀
     have h1 := sub_eq_zero.1 ((smul_eq_zero.1 hr).resolve_left (pow_ne_zero _ hne))
     simp_rw [← hb₀] at h1
     rw [← b₀.equivFun_symm_apply] at h1
@@ -421,7 +421,7 @@ theorem unit_cocycle : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (bk : BK K) (
         k₂.comp En.inr = k₃.comp En.inr → ε.map k₁.f * ε.map k₂.f = ε.map k₃.f := by
   intro l _ K bk d ρ τ s ht En ε hrel B
   have cocB := _root_.GlobalTheory.BSP.height_rel_unit_cocycle l K bk d ρ τ s ht En ε hrel
-  haveI : IsAdicComplete bk.J bk.S := bk.complete
+  have : IsAdicComplete bk.J bk.S := bk.complete
   refine ⟨unit_of_codiag En.inl En.inr En.univ ε
     (fun Δ h => (cocB bk.prism (Hom.id _) Unit (TopBasis.self bk.J)).1 Δ h), fun k₁ k₂ k₃ h12 h13 h23 => ?_⟩
   exact (_root_.GlobalTheory.BSP.nonempty_env l K bk En.Q _ _ (GlobalTheory.T.isOrientedPrismUniformizerFrame_breuilKisinHom l K bk En.Q En.inl)).elim fun En₂ =>
@@ -1012,8 +1012,8 @@ theorem isUnit_toMatrix_actT {l : ℕ} [Fact l.Prime] {K : FinExt l} {V : Type} 
 
 theorem clause1_perfectPrism : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (P : LocPrime l) (AI : LocAinf l P), IsStd P AI → ∀ (V : Type) [AddCommGroup V] [Module ℚ_[l] V] [Module ℤ_[l] V] [IsScalarTower ℤ_[l] ℚ_[l] V] [FiniteDimensional ℚ_[l] V] [TopologicalSpace V] [IsModuleTopology ℚ_[l] V] (ρ : Representation ℚ_[l] ↥(GK K) V) (L : Lattice (O := ℤ_[l]) ρ), (∀ x, Continuous fun g => ρ g x) → IsCrys (P.PD K) ρ → ∃ (M : FCrys l ↥(OL K)) (j : M.M (ainfObj K) →ₛₗ[(inclW l).comp (ainfId K).toRingHom] (WCb l ⊗[ℤ_[l]] ↥L.T)), Realises K M (ainfObj K) (ainfId K) ↥L.T (fun g => actT L g) j := by
   intro l _ K P AI hStd V _ _ _ _ _ _ _ ρ L hcont hcrys
-  haveI : Module.Free ℤ_[l] ↥L.T := L.free
-  haveI : Module.Finite ℤ_[l] ↥L.T := Module.Finite.iff_fg.mpr L.fg
+  have : Module.Free ℤ_[l] ↥L.T := L.free
+  have : Module.Finite ℤ_[l] ↥L.T := Module.Finite.iff_fg.mpr L.fg
   obtain ⟨bk⟩ := _root_.GlobalTheory.BSP.nonempty_bk_of_finExt l K
   obtain ⟨τ, hτ⟩ := _root_.GlobalTheory.BSP.exists_isPer l K bk
   let b := Module.finBasis ℤ_[l] ↥L.T
@@ -1235,8 +1235,8 @@ theorem FHom.eq_of_tr {M M' : FCrys l R} (u u' : FHom M M') {P Q : Obj l R} (g :
 
 theorem FHom.eq_of_inj {M M' : FCrys l R} (u u' : FHom M M') {B C : Obj l R} (h : Hom B C)
     (hinj : Function.Injective h.f) (hC : u.u C = u'.u C) : u.u B = u'.u B := by
-  haveI := M'.fin B
-  haveI := M'.proj B
+  have := M'.fin B
+  have := M'.proj B
   have hi : Function.Injective (M'.tr h) :=
     semiBC_injective_of_injective _ _ h.f hinj _ _ (M'.tr h) (M'.tr_bc h)
   ext x
@@ -1278,10 +1278,10 @@ theorem fHom_eq_of_realises : ∀ (l : ℕ) [Fact l.Prime] (K : FinExt l) (T' : 
   intro l _ K T' _ _ ρ' M M' j' H u u' h
   obtain ⟨bk⟩ := _root_.GlobalTheory.BSP.nonempty_bk_of_finExt l K
   apply _root_.GlobalTheory.BSP.fhom_ext_bk l K bk M M' u u'
-  haveI := M'.fin (ainfObj K)
-  haveI := M'.proj (ainfObj K)
-  haveI := M'.fin bk.prism
-  haveI := M'.proj bk.prism
+  have := M'.fin (ainfObj K)
+  have := M'.proj (ainfObj K)
+  have := M'.fin bk.prism
+  have := M'.proj bk.prism
   have hj : Function.Injective j' :=
     semiBC_injective_of_injective _ _ ((inclW l).comp (ainfId K).toRingHom)
       (GlobalTheory.Prism.inclW_injective.comp (ainfId K).injective) _ _ j' H.bc

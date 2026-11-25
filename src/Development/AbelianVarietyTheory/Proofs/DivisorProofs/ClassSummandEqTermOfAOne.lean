@@ -411,11 +411,6 @@ open scoped TensorProduct Classical
 
 namespace GlobalTheory.IntAwayP
 
-theorem norm_self_padicAlgCl (p : ℕ) [Fact p.Prime] : ‖(p : PadicAlgCl p)‖ = (p : ℝ)⁻¹ := by
-  have := PadicAlgCl.norm_extends p (p : ℚ_[p])
-  rw [map_natCast] at this
-  rw [this, Padic.norm_p]
-
 theorem norm_prime_padicAlgCl_of_ne (ℓ p : ℕ) [hℓ : Fact ℓ.Prime] (hp : p.Prime) (h : ℓ ≠ p) :
     ‖(p : PadicAlgCl ℓ)‖ = 1 := by
   have h1 := PadicAlgCl.norm_extends ℓ (p : ℚ_[ℓ])
@@ -450,7 +445,7 @@ theorem exists_pow_mul_isIntegral : ∀ (K : Type) [Field K] [NumberField K] (p 
     exact hpi.mul hm
   · intro φ
     rw [map_mul, map_mul, map_pow, map_natCast, map_natCast, norm_mul, norm_mul, norm_pow,
-      norm_self_padicAlgCl]
+      ReciprocityTheory.DiscreteGroups.LocalClassField.norm_p]
     have hD := IsUltrametricDist.norm_natCast_le_one (PadicAlgCl p) D
     have h2 : ‖(D : PadicAlgCl p)‖ * ‖φ c‖ ≤ (p : ℝ) ^ m₀ :=
       (mul_le_of_le_one_left (norm_nonneg _) hD).trans ((hB φ).trans hm₀.le)
@@ -471,7 +466,6 @@ open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMi
 open scoped TensorProduct Classical
 
 namespace GlobalTheory
-
 
 open Matrix NumberField in
 open scoped TensorProduct Classical in
@@ -676,16 +670,6 @@ open scoped TensorProduct Classical
 noncomputable section
 namespace GlobalTheory.FinPtsAway
 
-theorem supp_compact (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : G.Level) (f : G.GAf → ℂ)
-    (hf : IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f) :
-    ∃ Q : Set G.GAf, IsCompact Q ∧ ∀ g, f g ≠ 0 → g ∈ Q := by
-  obtain ⟨-, -, -, S, hS⟩ := hf
-  refine ⟨⋃ s ∈ S, (fun k : G.GAf × G.GAf => k.1 * s * k.2) '' ((L.K : Set G.GAf) ×ˢ (L.K : Set G.GAf)), ?_, ?_⟩
-  · exact S.isCompact_biUnion fun s _ => (L.compact.prod L.compact).image (by fun_prop)
-  · intro g hg
-    obtain ⟨s, hs, k₁, hk₁, k₂, hk₂, rfl⟩ := hS g hg
-    exact Set.mem_iUnion₂.2 ⟨s, hs, (k₁, k₂), ⟨hk₁, hk₂⟩, rfl⟩
-
 theorem bdd_denom (p : ℕ) [Fact p.Prime] (Q : Set (AfP p)) (hQ : IsCompact Q) :
     ∃ D : ℕ, 0 < D ∧ ∀ q : ℚ, algebraMap ℚ (AfP p) q ∈ Q → ∃ m : ℕ, ∃ z : ℤ, (p : ℚ) ^ m * D * q = z := by
   obtain ⟨D, hD, hQD⟩ := _root_.GlobalTheory.DenAwayCpt.exists_nat_mul_integral_of_isCompact p Q hQ
@@ -784,7 +768,7 @@ theorem minpoly_coeff_integral (F : Type) [Field F] (S : Type) [Ring S] [Algebra
 
 theorem exists_den_minpoly_coeff : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p) (L : G.Level) (f : G.GAf → ℂ), IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f → ∀ (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t), ∃ D : ℕ, 0 < D ∧ ∀ (y : grp G β) (h : G.GAf), f (h⁻¹ * toAfF G β x t hx y * h) ≠ 0 → ∀ k : ℕ, ∃ m : ℕ, IsIntegral ℤ ((p : G.F) ^ m * D * (minpoly G.F (((y : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C)).coeff k) := by
   intro p _ G L f hf β x t hx
-  obtain ⟨Q, hQc, hQ⟩ := supp_compact p G L f hf
+  obtain ⟨Q, hQc, hQ⟩ := GlobalTheory.FinClsLoc.support_subset_compact p G L f hf
   set N := Module.finrank ℚ G.C
   let cf : ℕ → G.GAf → AfP p := fun k g => (LinearMap.charpoly (LinearMap.mulLeft (AfP p)
       (((g : (AfP p ⊗[ℚ] G.C)ˣ × (AfP p)ˣ).1 : (AfP p ⊗[ℚ] G.C)ˣ) : AfP p ⊗[ℚ] G.C))).coeff k
@@ -1225,7 +1209,6 @@ end GlobalTheory.LKCx.FinPolysIrr
 
 namespace GlobalTheory.LKCx
 
-
 open GlobalTheory.LKCx.FinPolysIrr in
 theorem finite_minpoly_fix_a_one : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 → ∀ v : InfinitePlace G.F, sigPosH (G.gram_herm v) = 1 → ∀ (L : G.Level) (f : G.GAf → ℂ), IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f → ∀ (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ), IsTest (sigG G 1) (KHT p G.m G.n 1 G.Fw) K' f' → ∀ (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t), sh G β = β → (∃ z : (ℝ ⊗[ℚ] G.C)ˣ, Triv G ℝ β z 1) → Set.Finite {P : Polynomial G.F | ∃ (y : grp G β) (a : Dat G v β), P = minpoly G.F (((y : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C) ∧ FixL G v β y a.2.1 ∧ f (a.1.1⁻¹ * toAfF G β x t hx y * a.1.1) * f' (a.1.2⁻¹ * toP1 G β y * a.1.2) ≠ 0} := by
   intro p _ G ha v hv L f hf K' f' hf' β x t hx hsym hR
@@ -1260,8 +1243,6 @@ section -- clump:auto
 open Matrix NumberField GlobalTheory.LKTrip GlobalTheory.LKRes GlobalTheory.LKMid GlobalTheory.LKCount GlobalTheory.LKCx
 open scoped TensorProduct Classical
 
-theorem _root_.GlobalTheory.T.orbital_term_real_trivialisation : ∀ (p : ℕ) [Fact p.Prime] (G : HTGroup p), G.a = 1 → ∀ v : InfinitePlace G.F, sigPosH (G.gram_herm v) = 1 → ∀ (L : G.Level) (f : G.GAf → ℂ), IsTest (MonoidHom.id _) L.K.toSubgroup L.K.toSubgroup f → ∀ (K' : Subgroup (Gr G 1)) (f' : Gr G 1 → ℂ), IsTest (sigG G 1) (KHT p G.m G.n 1 G.Fw) K' f' → ∀ (β : G.Cˣ) (x : (AfP p ⊗[ℚ] G.C)ˣ) (t : (AfP p)ˣ) (hx : Triv G (AfP p) β x t), sh G β = β → (∃ z : (ℝ ⊗[ℚ] G.C)ˣ, Triv G ℝ β z 1) → Set.Finite {P : Polynomial G.F | ∃ (y : grp G β) (a : Dat G v β), P = minpoly G.F (((y : G.Cˣ × ℚˣ).1 : G.Cˣ) : G.C) ∧ FixL G v β y a.2.1 ∧ f (a.1.1⁻¹ * toAfF G β x t hx y * a.1.1) * f' (a.1.2⁻¹ * toP1 G β y * a.1.2) ≠ 0} := by
-  first | (exact @GlobalTheory.LKCx.finite_minpoly_fix_a_one)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.OrbitalTermRealTrivialisation =====
@@ -1300,7 +1281,7 @@ theorem finite_pts_reg (G : HTGroup p) (ha : G.a = 1) (v : InfinitePlace G.F) (h
   have hsep := sep_of_regAf G v hv f hreg β x t hx hsym htr
   obtain ⟨Y, hY⟩ := Classical.axiomOfChoice
     (fun P => _root_.GlobalTheory.LKCx.ClsReg.classes_finite p G ha v hv L f hf K' f' hf' β x t hx hsep hsym htr P)
-  refine ((GlobalTheory.T.orbital_term_real_trivialisation p G ha v hv L f hf K' f' hf' β x t hx hsym htr).biUnion
+  refine ((GlobalTheory.LKCx.finite_minpoly_fix_a_one p G ha v hv L f hf K' f' hf' β x t hx hsym htr).biUnion
     (fun P _ => (Y P).finite_toSet.biUnion
       (fun y₀ _ => _root_.GlobalTheory.FinPtsSep.finite_pts_conj_fixL_sep p G ha v hv L f hf K' f' hf' β x t hx hsep hsym htr y₀))).subset ?_
   rintro q ⟨y, hy, hne⟩

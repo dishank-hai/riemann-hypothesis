@@ -429,16 +429,6 @@ private theorem ent_gamma {K d : ℕ} (hd : d ∣ K) {δ : SL(2, ℤ)} (h : δ �
   · simpa using key _ _ h10
   · have := key _ _ h11; rw [map_one] at this; simpa using this
 
-private theorem gamma_le {K d : ℕ} (hd : d ∣ K) {δ : SL(2, ℤ)} (h : δ ∈ CongruenceSubgroup.Gamma K) :
-    δ ∈ CongruenceSubgroup.Gamma d := by
-  rw [CongruenceSubgroup.Gamma_mem]
-  have e := ent_gamma hd h
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · simpa using e 0 0
-  · simpa using e 0 1
-  · simpa using e 1 0
-  · simpa using e 1 1
-
 theorem adj_of_near : ∀ (N l w n : ℕ), 0 < N → l.Prime → l ≠ 2 → ¬ l ∣ N → Odd w →
     ∀ z z' : SL(2, ℤ) → MvPolynomial (Fin 2) (ZMod (l ^ n)), IsCoc w (Gam N l) z → IsCoc w (Gam N l) z' →
     Near z z' → ∃ p : MvPolynomial (Fin 2) (ZMod (l ^ n)), p.IsHomogeneous w ∧
@@ -519,7 +509,7 @@ theorem adj_of_near : ∀ (N l w n : ℕ), 0 < N → l.Prime → l ≠ 2 → ¬ 
     intro δ hδ
     rw [Subgroup.mem_subgroupOf] at hδ
     simp only [zz]
-    rw [hM'eq _ (gamma_le hM'K hδ), sub_self]
+    rw [hM'eq _ (GlobalTheory.KZ.H3.mem_Gamma_of_dvd hM'K hδ), sub_self]
   obtain ⟨p, hpS, hp⟩ := _root_.GlobalTheory.KZ.H3.cocycle_isCoboundary_of_neg_central G R V ρ hρmul hρone h2 S hS Δ hΔn hΔ c' hc1 hc2 zz hzS hzc hzΔ
   refine ⟨p, hpS, fun γ hγ => ?_⟩
   exact hp ⟨γ, hγ⟩
@@ -622,7 +612,6 @@ theorem step (N l w : ℕ) [Fact l.Prime] (hN : 0 < N) (hl2 : l ≠ 2) (hlN : ¬
 end GlobalTheory.KZ.H3.CocLift
 
 namespace GlobalTheory.KZ.H3
-
 
 open Classical in
 theorem cocycle_lift_of_fam : ∀ (N l w : ℕ) [Fact l.Prime], 0 < N → l ≠ 2 → ¬ l ∣ N → Odd w → ∀ Φ, IsFam l w (Gam N l) Φ →

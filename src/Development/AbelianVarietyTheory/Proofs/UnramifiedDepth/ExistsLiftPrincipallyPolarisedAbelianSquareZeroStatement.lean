@@ -590,10 +590,6 @@ namespace GlobalTheory
 section
 open Polynomial
 
-private theorem zpMap_map_aeval {R' R : Type} [CommRing R'] [CommRing R] (π : R' →+* R)
-    (f : ℤ[X]) (x : R') : π (Polynomial.aeval x f) = Polynomial.aeval (π x) f :=
-  (Polynomial.aeval_algHom_apply π.toIntAlgHom x f).symm
-
 private theorem zpMap_general {B R : Type} [CommRing B] [CommRing R]
     (f : ℤ[X]) (ζ : B) (S : Submonoid ℕ) (h0 : Polynomial.aeval ζ f = 0)
     (hinj : ∀ g : ℤ[X], Polynomial.aeval ζ g = 0 → f ∣ g)
@@ -693,7 +689,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   have hmin := cyclotomic_eq_minpoly hprim hpos
   have hcoe : ∀ g : ℤ[X], ((Polynomial.aeval (Geo.Tor.zetaZP p M) g : Geo.Tor.ZP p M) : ℂ)
       = Polynomial.aeval ((Geo.Tor.zetaZP p M : Geo.Tor.ZP p M) : ℂ) g :=
-    fun g => zpMap_map_aeval (Geo.Tor.ZP p M).subtype g _
+    fun g => GlobalTheory.ringHom_aeval_eq_aeval_apply (Geo.Tor.ZP p M).subtype g _
   have h0 : Polynomial.aeval (Geo.Tor.zetaZP p M) (cyclotomic M ℤ) = 0 := by
     apply Subtype.ext
     rw [hcoe, hmin]
@@ -706,7 +702,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   have hminw := cyclotomic_eq_minpoly hw hpos
   have hz : Polynomial.aeval z (cyclotomic M ℤ) = 0 := by
     apply hv.hom_inj
-    rw [zpMap_map_aeval, map_zero, hminw]
+    rw [GlobalTheory.ringHom_aeval_eq_aeval_apply, map_zero, hminw]
     exact minpoly.aeval _ _
   have hsurj : ∀ b : Geo.Tor.ZP p M, ∃ n ∈ zpMap_S p, ∃ g : ℤ[X],
       b * (n : Geo.Tor.ZP p M) = Polynomial.aeval (Geo.Tor.zetaZP p M) g := by
@@ -726,7 +722,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
     intro b hb
     obtain ⟨n, hn, g, hg⟩ := hsurj b
     have h1 : Polynomial.aeval (algebraMap O C z) g = 0 := by
-      rw [← zpMap_map_aeval, ← hβ, ← zpMap_map_aeval, ← hg, map_mul, hb, zero_mul, map_zero]
+      rw [← GlobalTheory.ringHom_aeval_eq_aeval_apply, ← hβ, ← GlobalTheory.ringHom_aeval_eq_aeval_apply, ← hg, map_mul, hb, zero_mul, map_zero]
     have h2 : cyclotomic M ℤ ∣ g := by
       rw [hminw]
       exact minpoly.isIntegrallyClosed_dvd (hw.isIntegral hpos) h1
@@ -736,7 +732,7 @@ private theorem zpMap_main (p : ℕ) (C : Type) [Field C] [IsAlgClosed C] [CharZ
   · intro k _ gk
     haveI : NeZero (M : k) := ⟨by simpa using (hMu.map gk).ne_zero⟩
     rw [← isRoot_cyclotomic_iff, hβ, IsRoot.def, ← map_cyclotomic_int, ← algebraMap_int_eq,
-      eval_map_algebraMap, ← zpMap_map_aeval, hz, map_zero]
+      eval_map_algebraMap, ← GlobalTheory.ringHom_aeval_eq_aeval_apply, hz, map_zero]
 
 end
 

@@ -54,14 +54,6 @@ namespace UpperTheory.TP.RP.Der
 
 variable {R : Type} [CommRing R] [Algebra ℂ R]
 
-theorem hasSum_cauchy {a b : ℕ → ℂ} {A B : ℂ} (ha : HasSum a A) (hb : HasSum b B) :
-    HasSum (fun k => ∑ p ∈ Finset.HasAntidiagonal.antidiagonal k, a p.1 * b p.2) (A * B) := by
-  exact UpperTheory.TP.RP.hasSum_cauchy ha hb
-
-theorem fact_choose {i j : ℕ} :
-    (((i + j).factorial : ℂ))⁻¹ * ((i + j).choose i : ℂ) = ((i.factorial : ℂ))⁻¹ * ((j.factorial : ℂ))⁻¹ := by
-  exact UpperTheory.TP.RP.inv_fact_choose i j
-
 theorem der_pow_mul (D : Derivation ℂ R R) (k : ℕ) (P Q : R) :
     (D.toLinearMap ^ k) (P * Q) = ∑ p ∈ Finset.HasAntidiagonal.antidiagonal k,
       (k.choose p.1 : R) * ((D.toLinearMap ^ p.1) P * (D.toLinearMap ^ p.2) Q) := by
@@ -165,7 +157,7 @@ theorem Good.mul {D : Derivation ℂ R R} {P Q u v : R} (hP : Good D P u) (hQ : 
     rw [der_pow_mul, map_sum, Finset.mul_sum, Finset.sum_comm]
     refine Finset.sum_congr rfl fun p hp => ?_
     obtain rfl : p.1 + p.2 = k := Finset.HasAntidiagonal.mem_antidiagonal.1 hp
-    rw [← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, key _ _ (pow_mem m₂ s₂ _), ← mul_assoc, fact_choose, Finset.mul_sum]
+    rw [← nsmul_eq_mul, map_nsmul, nsmul_eq_mul, key _ _ (pow_mem m₂ s₂ _), ← mul_assoc, inv_fact_choose, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
 

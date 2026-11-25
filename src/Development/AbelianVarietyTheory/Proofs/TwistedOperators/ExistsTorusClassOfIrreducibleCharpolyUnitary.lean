@@ -544,13 +544,6 @@ noncomputable section
 
 namespace GlobalTheory.TrEll.RatEll
 
-theorem sig_sig {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] {σ : E →ₐ[F] E}
-    (h : IsCMExt F E σ) (e : E) : σ (σ e) = e := by
-  obtain ⟨-, -, -, h⟩ := h
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := inferInstance
-  apply τ.injective
-  rw [h, h, star_star]
-
 theorem exists_cls_of_irreducible : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (n : ℕ) (J : Matrix (Fin n) (Fin n) E), IsHermND σ J → Function.Bijective (diagH σ J F) ∧ ∀ γ : GRat σ J, Irreducible γ.1.1.charpoly → ∃ P : PPol σ n, γ.1.1.charpoly = P.1 ∧ ∃ q, HasCls P F J (diagH σ J F γ) q := by
   intro F E _ _ _ _ _ σ hσ n J hJ
   refine ⟨_root_.GlobalTheory.TwistRatBij.diagH_bijective F E σ n J, ?_⟩
@@ -569,7 +562,7 @@ theorem exists_cls_of_irreducible : ∀ (F E : Type) [Field F] [NumberField F] [
   let P : PPol σ n := ⟨γ.1.1.charpoly, hP⟩
   refine ⟨P, rfl, ?_⟩
   obtain ⟨φ, hφ⟩ := _root_.GlobalTheory.TrEll.exists_linearEquiv_mulVec_of_charpoly F E σ n P γ.1.1 rfl
-  obtain ⟨x, hx0, hxs, hxf⟩ := _root_.GlobalTheory.TrEll.HermTrace.exists_trace_form F E σ (sig_sig hσ) n P J hJ γ.1.1 hm φ hφ
+  obtain ⟨x, hx0, hxs, hxf⟩ := _root_.GlobalTheory.TrEll.HermTrace.exists_trace_form F E σ (GlobalTheory.AdelicU.cm_conj_conj hσ) n P J hJ γ.1.1 hm φ hφ
   exact _root_.GlobalTheory.RatCls.hasCls_of_ratIsom F E σ n P J φ x hx0 hxs hxf γ hφ
 
 end GlobalTheory.TrEll.RatEll

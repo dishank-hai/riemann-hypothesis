@@ -116,7 +116,6 @@ theorem leviV_log_pos {n N : ℕ} {w : Fin N → V n → ℂ} {x : V n} (hC : �
 variable {k : Type} [CommRing k] {Y : Scheme.{0}} {p : Y ⟶ Sp k} {σ : k →+* ℂ} {D : ℕ}
   {c : AlgChart p σ D} {y : CxPts p σ} {W : Y.Opens} {ξ : V D}
 
-
 variable (c y ξ) in
 def dirDer (f : Γ(Y, W)) : ℂ := fderiv ℂ (ev p σ W f ∘ c.e.symm) (c.e y) ξ
 
@@ -171,7 +170,6 @@ theorem eq_zero_of_dirDer (hy : y ∈ c.e.source) (hW : y ∈ ptsIn p σ W) (hU 
   exact (mul_eq_zero.1 e).resolve_left (pow_ne_zero n ((mem_ptsIn_basicOpen hW h).1 hB))
 
 variable {N : ℕ} (i : Y ⟶ PSpace k N) (hi : i ≫ PSpace.str k N = p)
-
 
 include hi in
 theorem eq_zero_of_dirDer_ratio [IsClosedImmersion i] (hy : y ∈ c.e.source) {j : Fin (N + 1)}
@@ -1102,7 +1100,6 @@ theorem cInfAt_nsq {B : LB X} (φ : Weight p σ B) (hφ : φ.IsCInf) (s : B.Sec)
 
 end GlobalTheory.Mix.RegLog
 
-
 open GlobalTheory.Mix.RegLog in
 theorem GlobalTheory.Mix.semiPosReg_addFn_log_nsq : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) (σ : k →+* ℂ) (D : ℕ) (N : MLine p σ), N.φ.SemiPosReg D → ∀ (t : N.B.Sec) (δ : ℝ), 0 < δ → (∀ y, CInfAt (fun y => Real.log (N.φ.nsq (secVal p σ t) y + δ)) y) ∧ (N.φ.addFn fun y => Real.log (N.φ.nsq (secVal p σ t) y + δ)).SemiPosReg D := by
   intro k _ X p σ D N hN t δ hδ
@@ -1219,13 +1216,6 @@ noncomputable section
 
 namespace GlobalTheory.Mix.LogLim
 
-theorem compactSpace_of_proj {R : Type} [CommRing R] {X : Scheme.{0}} {f : X ⟶ Sp R}
-    (h : IsProjOver f) : CompactSpace X := by
-  obtain ⟨m, i, hi, rfl⟩ := h
-  have := isProper_str R m
-  have : IsProper (i ≫ PSpace.str R m) := inferInstance
-  exact QuasiCompact.compactSpace_of_compactSpace (i ≫ PSpace.str R m)
-
 theorem nsq_nonneg {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {σ : k →+* ℂ}
     (N : MLine p σ) (t : N.B.Sec) (y : CxPts p σ) : 0 ≤ N.φ.nsq (secVal p σ t) y := by
   unfold Weight.nsq; positivity
@@ -1241,7 +1231,6 @@ theorem exists_nsq_le {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} 
   exact ⟨C, fun y => hC ⟨y, Set.mem_univ _, rfl⟩⟩
 
 end GlobalTheory.Mix.LogLim
-
 
 open GlobalTheory.Mix.LogLim in
 theorem GlobalTheory.Mix.tendsto_logReg : GlobalTheory.Published.Principalisation → ∀ (F : Type) [Field F] (X : Scheme.{0}) [IsIntegral X] [IsLocallyNoetherian X] (p : X ⟶ Sp F) (σ : F →+* ℂ) (e : ℕ), IsProjOver p → topologicalKrullDim X = (e + 1 : ℕ) → ∀ (N : MLine p σ) (t : N.B.Sec), (genericPoint X ∈ nonzeroLocus t → ∀ L : Fin (e + 1) → MLine p σ, Tendsto (fun n : ℕ => Mix.int L fun y => Real.log (N.φ.nsq (secVal p σ t) y + 1 / ((n : ℝ) + 1))) atTop (𝓝 (2 * Mix.int L (N.logSec t)))) ∧ ∀ (L : Fin e → MLine p σ) (Δ : CartierDiv X), (∀ z, Δ.mult z ≠ 0 → z ∈ nonzeroLocus t) → Tendsto (fun n : ℕ => ∑ᶠ z, (Δ.mult z : ℝ) * cycInt L (fun y => Real.log (N.φ.nsq (secVal p σ t) y + 1 / ((n : ℝ) + 1))) z) atTop (𝓝 (2 * ∑ᶠ z, (Δ.mult z : ℝ) * cycInt L (N.logSec t) z)) := by
@@ -1266,7 +1255,7 @@ theorem GlobalTheory.Mix.tendsto_logReg : GlobalTheory.Published.Principalisatio
     have h2 := one (-1) hint.2
     simp only [Mix.int, MLine.logSec, mul_sub]
     exact h1.sub h2
-  · haveI : CompactSpace X := compactSpace_of_proj hp
+  · haveI : CompactSpace X := GlobalTheory.MetricIndep.compactSpace_of_projOver hp
     have hS := Δ.finite_support_mult
     have hsub (f : X → ℝ) : Function.support (fun z => (Δ.mult z : ℝ) * f z) ⊆ ↑hS.toFinset := by
       intro z hz
@@ -1535,7 +1524,6 @@ theorem pull_update {k : Type} [CommRing k] {X : Scheme.{0}} {p : X ⟶ Sp k} {�
   · simp [Function.update_of_ne hj]
 
 end GlobalTheory.Mix.CycAdd
-
 
 open GlobalTheory.Mix.CycAdd in
 theorem GlobalTheory.Mix.cycInt_update_tens : ∀ (k : Type) [CommRing k] (X : Scheme.{0}) (p : X ⟶ Sp k) (σ : k →+* ℂ), IsProjOver p → ∀ (D : ℕ) (L : Fin D → MLine p σ) (i : Fin D) (A B : MLine p σ) (f : CxPts p σ → ℝ) (z : X), CycIntg (Function.update L i A) f z → CycIntg (Function.update L i B) f z → cycInt (Function.update L i (A.tens B)) f z = cycInt (Function.update L i A) f z + cycInt (Function.update L i B) f z := by

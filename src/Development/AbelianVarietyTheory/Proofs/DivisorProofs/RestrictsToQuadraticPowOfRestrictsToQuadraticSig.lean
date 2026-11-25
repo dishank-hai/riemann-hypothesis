@@ -22,18 +22,8 @@ namespace GlobalTheory.ResEtaFOfPow
 
 variable {F E : Type} [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E]
 
-theorem sig_invol {σ : E →ₐ[F] E} (h : IsCMExt F E σ) (x : E) : σ (σ x) = x := by
-  obtain ⟨τ⟩ : Nonempty (E →+* ℂ) := ⟨(IsAlgClosed.lift (R := ℚ) (M := ℂ) (S := E)).toRingHom⟩
-  apply τ.injective
-  rw [h.2.2.2, h.2.2.2, star_star]
-
-theorem sig_ne {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ x, σ x ≠ x := by
-  apply _root_.GlobalTheory.SplitDetCharF.sig_ne <;> assumption
-
-
 variable (F E) in
 abbrev normI : (AF F ⊗[F] E)ˣ →* (AF F)ˣ := Units.map (Algebra.norm (AF F) : AF F ⊗[F] E →* AF F)
-
 
 variable (F E) in
 abbrev normGrp : Subgroup (AF F)ˣ :=
@@ -45,7 +35,7 @@ theorem algebraMap_inj : Function.Injective (algebraMap (AF F) (AF F ⊗[F] E)) 
 theorem exists_form {σ : E →ₐ[F] E} (h : IsCMExt F E σ) : ∃ δ : F, ¬ IsSquare δ ∧
     ∀ a : (AF F)ˣ, a ∈ (normI F E).range ↔
       ∃ x y : AF F, (a : AF F) = x ^ 2 - algebraMap F (AF F) δ * y ^ 2 := by
-  obtain ⟨δ, hδ, hh⟩ := _root_.GlobalTheory.QuadNormBase.norm_form F E σ h.2.2.1 (sig_invol h) (sig_ne h)
+  obtain ⟨δ, hδ, hh⟩ := _root_.GlobalTheory.QuadNormBase.norm_form F E σ h.2.2.1 (GlobalTheory.AdelicU.cm_conj_conj h) (GlobalTheory.AdelicU.exists_cm_conj_ne h)
   obtain ⟨h1, h2⟩ := hh (AF F)
   have hN : ∀ z : AF F ⊗[F] E, algebraMap (AF F) (AF F ⊗[F] E) (Algebra.norm (AF F) z) =
       z * sigR (AF F) σ z := fun z => by

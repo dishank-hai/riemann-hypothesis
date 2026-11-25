@@ -216,7 +216,7 @@ theorem injective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) : Funct
 
 theorem bijective_of_isCMType {φ : I → E →+* ℂ} (h : IsCMType φ) :
     Function.Bijective fun i => InfinitePlace.mk (φ i) := by
-  apply _root_.GlobalTheory.CMTypeNorm.place_bijective <;> assumption
+  apply _root_.GlobalTheory.CMVal.Model.IsCMType.bijective <;> assumption
 
 theorem exists_perm {K : Type} [Field K] [Algebra K E] {φK : K →+* ℂ} {φ : I → E →+* ℂ} {σ : ℂ ≃+* ℂ}
     (hφ : IsCMType φ) (hK : ∀ i, (φ i).comp (algebraMap K E) = φK) (hc : (starRingEnd ℂ).comp φK ≠ φK)
@@ -841,7 +841,6 @@ theorem exists_field {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (a
   refine ⟨_, inferInstance, {}, fun x => hle (hR ⟨x, rfl⟩), hle (hA (IntermediateField.subset_adjoin ℚ _ (by simp))),
     hle (hA (IntermediateField.subset_adjoin ℚ _ (by simp)))⟩
 
-
 open IntermediateField in
 theorem sum_log_emb (L : IntermediateField ℚ ℂ) [FiniteDimensional ℚ L] [NumberField L] (β : ℂ) (hβ : β ∈ L)
     (h0 : β ≠ 0) :
@@ -885,7 +884,6 @@ theorem emb_two {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (hK2 : 
   rw [h3, NumberField.Embeddings.card, hK2] at this
   omega
 
-
 open Classical in
 theorem sum_halve {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (hK2 : Module.finrank ℚ K = 2)
     (hc : (starRingEnd ℂ).comp φK ≠ φK) (L : IntermediateField ℚ ℂ) [NumberField L] (hK : ∀ x : K, φK x ∈ L)
@@ -918,7 +916,6 @@ theorem sum_halve {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (hK2 
   · intro a _; exact hcc a
   · intro a _; exact hcc a
   · intro a _; exact (hf a).symm
-
 
 open Classical in
 theorem cover {K : Type} [Field K] [NumberField K] (φK : K →+* ℂ) (j₀ : ℂ)
@@ -1101,7 +1098,6 @@ theorem condQ_empty {E : Type} [Field E] [NumberField E] (𝔣 : Ideal (OF E)) :
 end GlobalTheory.BetaArchPf
 
 namespace GlobalTheory.SqTop
-
 
 open GlobalTheory.BetaArchPf in
 theorem betaArch_of_transport : GlobalTheory.IndefiniteRowSideFullHecke.LatticeNormTransport.Transport → FieldDat → LBound → TorEx → BetaArch := by

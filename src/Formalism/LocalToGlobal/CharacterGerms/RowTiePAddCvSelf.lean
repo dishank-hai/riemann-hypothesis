@@ -133,7 +133,7 @@ theorem FBChart.addCvCol (hG : GermISt Y) : Y.rawCol.AddCvSt V := by
       hev _ hc1, hpa, hp0, hp1] at h
     exact h
   · intro v hv
-    have hsg0 : MvPowerSeries.constantCoeff (Y.rawCol.sg v) = 0 := Y.rawCol.constantCoeff_sg (gauge_axes Y 0) v
+    have hsg0 : MvPowerSeries.constantCoeff (Y.rawCol.sg v) = 0 := Y.rawCol.constantCoeff_sg (Formalism.L2.FormalSeriesBounds.FBChart.axisAll Y 0) v
     refine ⟨?_, ?_⟩
     · rw [map_sub, map_sub]
       have e1 : PowerSeries.constantCoeff (alongCv γ'' (Y.rawCol.sg v)) = 0 := constantCoeff_subst_zero hγ''0 hsg0

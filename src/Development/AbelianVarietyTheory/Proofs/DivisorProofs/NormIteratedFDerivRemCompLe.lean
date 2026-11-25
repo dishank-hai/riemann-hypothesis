@@ -8,6 +8,7 @@ public import Mathlib.Analysis.Calculus.Deriv.Add
 public import Mathlib.Analysis.Calculus.Deriv.Mul
 public import Mathlib.Analysis.Complex.RealDeriv
 public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 @[expose] public section
 
@@ -45,13 +46,8 @@ theorem deriv_affine_cexp (a c d e : ℂ) :
   rw [h.deriv]; ring
 
 theorem norm_cexp_mul_I_sub_one_le (z : ℝ) : ‖Complex.exp (z * I) - 1‖ ≤ 2 * |z| := by
-  rcases le_or_gt |z| 1 with hz | hz
-  · have hn : ‖(z : ℂ) * I‖ = |z| := by simp
-    have := Complex.norm_exp_sub_one_le (x := (z : ℂ) * I) (by rw [hn]; exact hz)
-    rwa [hn] at this
-  · calc ‖Complex.exp (z * I) - 1‖ ≤ ‖Complex.exp (z * I)‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
-      _ = 2 := by rw [Complex.norm_exp_ofReal_mul_I]; norm_num
-      _ ≤ 2 * |z| := by linarith
+  rw [mul_comm _ I]
+  exact Real.norm_exp_I_mul_ofReal_sub_one_le.trans (by rw [Real.norm_eq_abs]; linarith [abs_nonneg z])
 
 theorem norm_cexp_mul_I_sub_one_sub_le (z : ℝ) :
     ‖Complex.exp (z * I) - 1 - z * I‖ ≤ 3 * z ^ 2 := by

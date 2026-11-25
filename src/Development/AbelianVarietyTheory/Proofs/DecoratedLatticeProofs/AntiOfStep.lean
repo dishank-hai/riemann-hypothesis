@@ -20,23 +20,9 @@ namespace GlobalTheory.Core.Rk.HdNc
 
 theorem anti_of_step {r : ℕ} (f : Fin r → ℝ) (h : ∀ (i : Fin r) (hi : i.1 + 1 < r), f ⟨i.1 + 1, hi⟩ < f i) :
     ∀ a b : Fin r, a ≤ b → f b ≤ f a := by
-  have key : ∀ (d a : ℕ) (ha : a + d < r), f ⟨a + d, ha⟩ ≤ f ⟨a, by omega⟩ := by
-    intro d
-    induction d with
-    | zero => intro a ha; exact le_rfl
-    | succ d ih =>
-      intro a ha
-      have h1 := h ⟨a + d, by omega⟩ (by simp only []; omega)
-      have h2 := ih a (by omega)
-      have e : (⟨(⟨a + d, by omega⟩ : Fin r).1 + 1, by simp only []; omega⟩ : Fin r) = ⟨a + (d + 1), ha⟩ := by
-        ext; simp only []; omega
-      rw [e] at h1
-      linarith
-  intro a b hab
-  have hd := key (b.1 - a.1) a.1 (by omega)
-  have e1 : (⟨a.1 + (b.1 - a.1), by omega⟩ : Fin r) = b := by ext; simp only []; omega
-  rw [e1] at hd
-  exact hd
+  cases r with
+  | zero => exact fun a => Fin.elim0 a
+  | succ r => exact (Fin.strictAnti_iff_succ_lt.mpr fun i => h i.castSucc i.succ.isLt).antitone
 
 theorem lamS_node (R : Ranks) (P : HCParam R) (j : ℕ) (hj : j < R.m) (hi : R.k - 1 + j < R.r) :
     lamS R P ⟨R.k - 1 + j, hi⟩ = -(((P.b ⟨j, hj⟩ : ℚ)) : ℝ) := by

@@ -352,17 +352,10 @@ theorem ptWeight_swap (k r : ℕ) (hk : 1 ≤ k) (T T' : ℝ) (γ : Point ℂ (r
   rw [List.getLast?_map, hb]
   rfl
 
-theorem aT_one (k r : ℕ) : aT k r 1 = 1 := by
-  unfold aT
-  rw [← Matrix.diagonal_one]
-  congr 1
-  funext i
-  simp
-
 theorem conjF_one {k r : ℕ} {V : Type*} (F : B.Mat k r → V) : conjF 1 F = F := by
   funext x
   unfold conjF
-  rw [aT_one]; simp
+  rw [GlobalTheory.ThA.TorusJac.aT_one]; simp
 
 theorem gamLev_one (k r : ℕ) : D.GamLev k r 1 1 0 = 1 := by
   unfold D.GamLev

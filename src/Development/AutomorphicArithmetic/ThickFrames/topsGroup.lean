@@ -504,36 +504,24 @@ private lemma marginal {α β : Type} [Fintype α] [Fintype β] [DecidableEq α]
 private lemma fin_sum_eq (n : ℕ) (q : ℕ → ℝ) (F : Finset ℕ → ℝ) :
     (∑ S : Finset (Fin n), pw (fun i : Fin n => q i) S * F (S.map Fin.valEmbedding)) =
       exP q (range n) F := by
+  let e := (Finset.mapEmbedding (Fin.valEmbedding : Fin n ↪ ℕ)).toEmbedding
+  have hrange : (univ : Finset (Fin n)).map Fin.valEmbedding = range n := by
+    rw [Fin.map_valEmbedding_univ, Nat.Iio_eq_range]
+  have hpow : (range n).powerset = (univ : Finset (Finset (Fin n))).map e := by
+    ext T
+    rw [mem_powerset, mem_map, ← hrange, subset_map_iff]
+    change (∃ u ⊆ (univ : Finset (Fin n)), T = u.map Fin.valEmbedding) ↔
+      ∃ u ∈ (univ : Finset (Finset (Fin n))), u.map Fin.valEmbedding = T
+    simp only [subset_univ, mem_univ, true_and, eq_comm (a := T)]
   unfold exP
-  refine Finset.sum_bij (fun S _ => S.map Fin.valEmbedding) ?_ ?_ ?_ ?_
-  · intro S _
-    rw [mem_powerset]
-    intro x hx
-    obtain ⟨i, _, rfl⟩ := mem_map.mp hx
-    simp
-  · intro S _ S' _ h
-    exact Finset.map_injective _ h
-  · intro T hT
-    refine ⟨univ.filter (fun i : Fin n => (i : ℕ) ∈ T), mem_univ _, ?_⟩
-    ext x
-    simp only [mem_map, mem_filter, mem_univ, true_and, Fin.valEmbedding_apply]
-    constructor
-    · rintro ⟨i, hi, rfl⟩; exact hi
-    · intro hx
-      exact ⟨⟨x, mem_range.mp (mem_powerset.mp hT hx)⟩, hx, rfl⟩
-  · intro S _
-    have e : range n \ S.map Fin.valEmbedding = (univ \ S).map Fin.valEmbedding := by
-      ext x
-      simp only [mem_sdiff, mem_range, mem_map, mem_univ, true_and, Fin.valEmbedding_apply]
-      constructor
-      · rintro ⟨hx, hx'⟩
-        exact ⟨⟨x, hx⟩, fun h => hx' ⟨_, h, rfl⟩, rfl⟩
-      · rintro ⟨i, hi, rfl⟩
-        refine ⟨i.2, ?_⟩
-        rintro ⟨j, hj, hji⟩
-        exact hi (Fin.ext hji ▸ hj)
-    rw [e, prod_map, prod_map]
-    rfl
+  rw [hpow, Finset.sum_map]
+  refine Finset.sum_congr rfl fun S _ => ?_
+  have hdiff : range n \ S.map Fin.valEmbedding = (univ \ S).map Fin.valEmbedding := by
+    rw [Finset.map_sdiff, hrange]
+  change _ = ((∏ a ∈ S.map Fin.valEmbedding, q a) *
+    ∏ a ∈ range n \ S.map Fin.valEmbedding, (1 - q a)) * F (S.map Fin.valEmbedding)
+  rw [hdiff, prod_map, prod_map]
+  rfl
 
 private lemma bernoulliExpectation_mem_and (q : ℕ → ℝ) {S : Finset ℕ} {i₀ : ℕ} (hm : i₀ ∈ S) (A : Finset ℕ → Prop) :
     exP q S (fun T => ind (i₀ ∈ T ∧ A T)) =

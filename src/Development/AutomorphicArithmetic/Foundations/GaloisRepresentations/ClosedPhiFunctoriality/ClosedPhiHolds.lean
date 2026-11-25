@@ -325,7 +325,7 @@ private theorem letter_lift {LL U D : Type} [Field LL] [Field U] [AddCommGroup D
     (hU : ∀ (u : U) (x : D), f (m u x) = κ (τ u) • f x) :
     ∃ ψ : Letter m F τ →+ M, (∀ (c : F) (y : Letter m F τ), ψ (c • y) = κ c • ψ y) ∧
       ∀ x : D, ψ (letterMk m F τ x) = f x := by
-  letI : Module F M := Module.compHom M κ
+  let : Module F M := Module.compHom M κ
   have hsm : ∀ (c : F) (y : M), c • y = κ c • y := fun _ _ => rfl
   let f₂ : F →+ D →+ M := AddMonoidHom.mk' (fun c =>
       (DistribSMul.toAddMonoidHom M (κ c)).comp f)
@@ -626,7 +626,7 @@ open UpperTheory.Gal.ClosedPhiFromClosedTrace
 theorem UpperTheory.Gal.ClosedPhiFromClosedTrace.frEx_holds :
     FrEx := by
   intro l _ K L₀ bk τp hτp P AI T a hL₀ r Cl Cv J hCl hcr
-  haveI := K.2
+  have := K.2
   let N : ℕ := Finset.univ.sup fun τ' : ↥K.1 →ₐ[ℚ_[l]] Om l => ((J τ').map Int.natAbs).sup
   have hN : ∀ τ', ∀ n ∈ J τ', |n| ≤ (N : ℤ) := by
     intro τ' n hn
@@ -668,7 +668,7 @@ open Formalism Formalism.ConjugateSelfDual ReciprocityTheory.Gal Formalism.Basic
 theorem func_holds : IntBasis → Func := by
   intro hB l _ F I _ x z hx hz
   classical
-  letI : Fintype I := Fintype.ofFinite I
+  let : Fintype I := Fintype.ofFinite I
   let eqv := Fintype.equivFin (Option I)
   let y : Fin (Fintype.card (Option I)) → Om l := fun k => (eqv.symm k).elim z x
   have hy : ∀ k, ‖y k‖ ≤ 1 := by
@@ -1606,8 +1606,8 @@ theorem UpperTheory.Gal.ClosedPhiFromClosedTrace.trLim_holds :
   obtain ⟨htor, hcomp, -⟩ := _root_.GlobalTheory.AcrisFrobE.main l K bk
   have hz := GlobalTheory.CrZero.eq_zero_of_forall_dvd _ hcomp.toIsHausdorff _ hdvd
   have hs0 : s = 0 := GlobalTheory.CrZero.pow_cancel (l : Per.Acris l) htor c₂ s 0 (by simpa using hz)
-  haveI : Nontrivial P.R.B := GlobalTheory.Pst.nontrivial_B P
-  haveI : Nontrivial (Per.Bcris l) := T.eB.injective.nontrivial
+  have : Nontrivial P.R.B := GlobalTheory.Pst.nontrivial_B P
+  have : Nontrivial (Per.Bcris l) := T.eB.injective.nontrivial
   rw [hs0, map_zero] at hs
   exact not_isUnit_zero hs
 end -- clump:auto
@@ -1692,8 +1692,8 @@ open UpperTheory.Gal.ClosedPhiFromClosedTrace
 private theorem exists_ext {l : ℕ} [Fact l.Prime] (L₁ : FinExt l) {d a : ℕ}
     (b : Fin d → Matrix (Fin a) (Fin a) (Om l)) :
     ∃ L : FinExt l, L₁.1 ≤ L.1 ∧ ∀ i j k, b i j k ∈ L.1 := by
-  haveI := L₁.2
-  haveI : ∀ x : Fin d × Fin a × Fin a, FiniteDimensional ℚ_[l] ↥(adjExt (b x.1 x.2.1 x.2.2)).1 :=
+  have := L₁.2
+  have : ∀ x : Fin d × Fin a × Fin a, FiniteDimensional ℚ_[l] ↥(adjExt (b x.1 x.2.1 x.2.2)).1 :=
     fun x => (adjExt _).2
   refine ⟨⟨L₁.1 ⊔ ⨆ x : Fin d × Fin a × Fin a, (adjExt (b x.1 x.2.1 x.2.2)).1,
     IntermediateField.finiteDimensional_sup _ _⟩, le_sup_left, fun i j k => ?_⟩
@@ -1741,7 +1741,7 @@ theorem UpperTheory.Gal.ClosedPhiFromClosedTrace.tie_holds :
   generalize mapRep (IntermediateField.inclusion hL).toRingHom r₁ = r' at hm
   have hc := (hm.isCrysAt_iff P).1 hcr
   have hP : IsPst P (Bw.repE L r') := GlobalTheory.PstOfCrys.isPst_of_isCrys T _ hc
-  haveI := hP.finite
+  have := hP.finite
   have hr : ∀ x i j, (((r' x).val i j : ↥L.1) : Om l) = (r x).val i j := fun x i j => by
     rw [← hm.2]; rfl
   let b' : Fin d → Matrix (Fin a) (Fin a) ↥L.1 := fun i => Matrix.of fun j k => ⟨b i j k, hb i j k⟩

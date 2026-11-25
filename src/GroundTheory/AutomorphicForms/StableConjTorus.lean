@@ -83,11 +83,6 @@ theorem eq_adjoint_iff (A B : Module.End E V) :
   ext x
   rw [hB, toSesq_adjoint_left]
 
-theorem adjoint_mul (A B : Module.End E V) : h.adjoint (A * B) = h.adjoint B * h.adjoint A := by
-  symm
-  rw [eq_adjoint_iff]
-  intro y x
-  rw [Module.End.mul_apply, toSesq_adjoint_left, toSesq_adjoint_left, Module.End.mul_apply]
 
 theorem adjoint_one : h.adjoint 1 = 1 := by
   symm

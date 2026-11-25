@@ -44,11 +44,6 @@ noncomputable section
 namespace GlobalTheory.PhiGam
 open scoped LaurentSeries PowerSeries
 
-private theorem powerSeries_smul_mem_of_mem {k : Type} [Field k] {V : Type} [AddCommGroup V] [Module k⸨X⸩ V]
-    [Module k⟦X⟧ V] [IsScalarTower k⟦X⟧ k⸨X⸩ V] (N : Submodule k⟦X⟧ V) {x : V} (hx : x ∈ N)
-    (a : k⟦X⟧) : (a : k⸨X⸩) • x ∈ N := by
-  rw [GlobalTheory.Models.CharSign.coe_smul]; exact N.smul_mem a hx
-
 private theorem mem_of_gmult_eq_zero_of_sub_mem {k U : Type} [Field k] [AddCommGroup U] [Module k U]
     (T : Module.End k U) (P Q : Submodule k U) (x : k) (s : Set U) (hs : s.Finite)
     (hP : P ≤ Submodule.span k s ⊔ Q) (h0 : gmult T P Q x = 0) (y : U) (hy : y ∈ P)
@@ -164,7 +159,8 @@ private theorem vv_pow_smul_mem_of_sen_eq_zero {k : Type} [Field k] {l : ℕ} (R
       simp only [add_smul, neg_smul]
       abel
     rw [hid]
-    exact add_mem (powerSeries_smul_mem_of_mem N hb _) (powerSeries_smul_mem_of_mem N hw' _)
+    rw [GlobalTheory.Models.CharSign.coe_smul, GlobalTheory.Models.CharSign.coe_smul]
+    exact add_mem (N.smul_mem _ hb) (N.smul_mem _ hw')
   have hkey : vv k ^ (s + 1) • b ∈ sh 1 N := by
     obtain ⟨t, ht, hsp⟩ := exists_finite_span_sup_shift_of_isLat N hN
     exact mem_of_gmult_eq_zero_of_sub_mem (nab g) (N.restrictScalars k) ((sh 1 N).restrictScalars k)

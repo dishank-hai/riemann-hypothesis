@@ -435,7 +435,6 @@ private lemma exists_unitary_exp_diagonal_fixing_of_nsq_eq {ι : Type} [Fintype 
   rw [hh] at hnh
   exact _root_.GlobalTheory.ClassFin.act_exp_eq_of_isMinVec ι m d v U δ hv hU hδ (by simpa only [one_mul] using hnh)
 
-
 open Matrix in
 open scoped Kronecker ComplexOrder TensorProduct MatrixOrder in
 theorem _root_.GlobalTheory.ClassFin.act_conjTranspose_of_isMinVec : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ)
@@ -466,21 +465,13 @@ namespace GlobalTheory.ClassFin.OrbitProper
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι]
 
-omit [DecidableEq ι] in
-lemma tpow_mul' (n : ℕ) (y z : Matrix ι ι ℂ) : tpow n (y * z) = tpow n y * tpow n z := by
-  classical
-  ext a b
-  simp only [tpow, Matrix.mul_apply, Matrix.of_apply]
-  rw [Finset.prod_univ_sum]
-  simp [Finset.prod_mul_distrib]
-
 variable {m : ℕ} (d : Fin m → ℕ)
 
 omit [DecidableEq ι] in
 lemma act_mul' (t : TIdx ι d → ℂ) (y z : Matrix ι ι ℂ) :
     act d t (y * z) = act d (act d t y) z := by
   funext k
-  simp only [act, tpow_mul', ← Matrix.vecMul_vecMul]
+  simp only [act, GlobalTheory.ClassFin.MinVec.tpow_mul', ← Matrix.vecMul_vecMul]
 
 omit [DecidableEq ι] in
 lemma continuous_act_right (t : TIdx ι d → ℂ) : Continuous (act d t) := by
@@ -581,7 +572,6 @@ lemma isCompact_nsq {κ : Type} [Fintype κ] (C : ℝ) : IsCompact {w : κ → �
     exact Finset.single_le_sum (f := fun k => ‖w k‖ ^ 2) (fun _ _ => by positivity) (Finset.mem_univ k)
 
 end GlobalTheory.ClassFin.OrbitProper
-
 
 open GlobalTheory.ClassFin.OrbitProper in
 theorem GlobalTheory.ClassFin.orbit_proper_of_isClosed : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (m : ℕ) (d : Fin m → ℕ) (v : TIdx ι d → ℂ), IsClosed (orb d v) → ∀ C : ℝ, ∃ C' : ℝ, ∀ y : Matrix ι ι ℂ, y.det = 1 → nsq (act d v y) ≤ C → ∃ h : Matrix ι ι ℂ, h.det = 1 ∧ act d v h = v ∧ ∀ i j, ‖(h * y) i j‖ ≤ C' := by

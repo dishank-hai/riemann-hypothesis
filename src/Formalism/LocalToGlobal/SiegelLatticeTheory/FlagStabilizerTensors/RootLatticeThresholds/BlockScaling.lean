@@ -576,16 +576,13 @@ theorem M_dep (n : ℕ) : ∀ (y y' : Formalism.FourierDecayAlt.C2.Lstidx w → 
 
 def linv (y : Formalism.FourierDecayAlt.C2.Lstidx w → ℂ) : Formalism.FourierDecayAlt.C2.Lstidx w → ℂ := fun q => M w y q.1.1 q.1.2
 
-theorem low_cont : Continuous (low w) := by
-  apply _root_.Formalism.FourierDecayAlt.P.Dx2.Rad.cont_low <;> assumption
-
 theorem M_cont : Continuous (fun y : Formalism.FourierDecayAlt.C2.Lstidx w → ℂ => M w y) := by
   have e : (fun y : Formalism.FourierDecayAlt.C2.Lstidx w → ℂ => M w y) = fun y => (low w y).adjugate := by
     funext y
     show (low w y)⁻¹ = _
     rw [Matrix.inv_def, low_det, Ring.inverse_one, one_smul]
   rw [e]
-  exact (low_cont w).matrix_adjugate
+  exact (Formalism.FourierDecayAlt.P.Dx2.Rad.cont_low w).matrix_adjugate
 
 theorem linv_mp : MeasurePreserving (linv w) volume volume := by
   set τ : ∀ q : Formalism.FourierDecayAlt.C2.Lstidx w, (Formalism.FourierDecayAlt.C2.Lstidx w → ℂ) → ℂ := fun q y => -(M w y q.1.1 q.1.2 + y q) with hτ
@@ -930,7 +927,6 @@ variable {D : D7} {X : HidaSetting D} (v : InfinitePlace X.B.I.F) {lam : ℂ} (h
   {Q : Matrix (Fin X.B.I.n) (Fin (2 * D.R.rS + D.R.k + 1)) ℂ} {Qi : Matrix (Fin (2 * D.R.rS + D.R.k + 1)) (Fin X.B.I.n) ℂ}
   (hT : IsTranspC X v lam D.R.k D.R.rS Q Qi) (u' : D.what₂.Word)
 
-
 include hT in
 theorem fam_eq (hl : lam ≠ 0) (b : Fin (D.R.rS + 1)) :
     Formalism.L2.SG.RealObj.frm X u' 1 v b =
@@ -947,7 +943,6 @@ theorem fam_eq (hl : lam ≠ 0) (b : Fin (D.R.rS + 1)) :
     unfold Formalism.QuantumDeterminants.fvec Formalism.QuantumDeterminants.bvec
     simp only [Fin.coe_castSucc, Fin.is_lt, dite_eq_left, Fin.eta]
     rw [h1, smul_smul, inv_mul_cancel₀ (pow_ne_zero _ hl), one_smul]
-
 
 include hT hl in
 theorem stCoordV_gen (w : Point D.host.E (D.R.rS + 1)) (γ : X.B.I.Ginf) (y : Formalism.REAL.UJ (X.B.I.ε v))
@@ -991,7 +986,6 @@ theorem stCoordV_gen (w : Point D.host.E (D.R.rS + 1)) (γ : X.B.I.Ginf) (y : Fo
   have h2 : ((D.host.rdE : ℂ) ^ (D.R.rS - p.1.2.val)) ≠ 0 := pow_ne_zero _ hrd
   rw [mul_pow, mul_pow]
   field_simp
-
 
 include hT hl in
 theorem coord_conj (M H : Matrix (Fin X.B.I.n) (Fin X.B.I.n) ℂ)
@@ -1160,7 +1154,6 @@ theorem conj_trG {n N : ℕ} {ε : Fin n → Bool} {Q : Matrix (Fin n) (Fin N) �
     _ = _ := by
       rw [hQQi, Matrix.mul_one, Matrix.mul_one]
       rfl
-
 
 open Formalism.L2.SG.HidaSetting Formalism.L2.SG.LocWSOf in
 theorem rset_of_stV {D : D7} {X : HidaSetting D} (v : InfinitePlace X.B.I.F) {lam : ℂ} (hl : lam ≠ 0)

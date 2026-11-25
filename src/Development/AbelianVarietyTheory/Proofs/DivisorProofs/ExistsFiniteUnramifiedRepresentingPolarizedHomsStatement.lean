@@ -210,7 +210,6 @@ open GlobalTheory.EndLoc
 open scoped CategoryTheory.Obj
 open ReciprocityTheory.ChartRestriction.G.Out
 
-
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.SectionBasesTransferTotalSpaceIsoStatement =====
@@ -546,8 +545,6 @@ open ReciprocityTheory.ChartRestriction.G ReciprocityTheory.ChartRestriction.G.S
 open GlobalTheory.EndLoc
 open scoped CategoryTheory.Obj
 
-theorem _root_.GlobalTheory.T.exists_finiteType_scheme_representing_polarizedHoms : ∀ (Rg : Type) [CommRing Rg] [IsNoetherianRing Rg] (A B : Over (Sp Rg)) [GrpObj A] [IsCommMonObj A] [GrpObj B] [IsCommMonObj B] (L : LB A.left) (M : LB B.left), IsAbelianScheme A → IsAbelianScheme B → L.IsLB → M.IsLB → Out.Rigidified A L → Out.Rigidified B M → Out.RelAmple A L → Out.RelAmple B M → ∃ R : HomFixRep A B L M, QuasiCompact R.π ∧ IsSeparated R.π ∧ LocallyOfFiniteType R.π := by
-  first | (exact @GlobalTheory.HomFixAff.exists_homFixRep_finiteType)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.ExistsFiniteTypeSchemeRepresentingPolarizedHomsStatement =====
@@ -575,7 +572,7 @@ theorem homFix_finiteType : ∀ (S : Scheme.{0}) [IsLocallyNoetherian S] (A B : 
     haveI : IsNoetherianRing Γ(S, U) := IsLocallyNoetherian.component_noetherian U
     obtain ⟨A', _, _, φA, gA, hA', hL', rA', aA'⟩ := _root_.GlobalTheory.OpenRestrictPol.exists_restrict_open S A L hA hL rA aA _ U.2.fromSpec (IsAffineOpen.isOpenImmersion_fromSpec U.2)
     obtain ⟨B', _, _, φB, gB, hB', hM', rB', aB'⟩ := _root_.GlobalTheory.OpenRestrictPol.exists_restrict_open S B M hB hM rB aB _ U.2.fromSpec (IsAffineOpen.isOpenImmersion_fromSpec U.2)
-    obtain ⟨R, h1, h2, h3⟩ := GlobalTheory.T.exists_finiteType_scheme_representing_polarizedHoms Γ(S, U) A' B' (L.pull φA) (M.pull φB) hA' hB' hL' hM' rA' rB' aA' aB'
+    obtain ⟨R, h1, h2, h3⟩ := GlobalTheory.HomFixAff.exists_homFixRep_finiteType Γ(S, U) A' B' (L.pull φA) (M.pull φB) hA' hB' hL' hM' rA' rB' aA' aB'
     exact ⟨A', B', _, _, φA, φB, R, gA, gB, h1, h2, h3⟩
 
 end GlobalTheory.HomFixGlue
@@ -632,7 +629,6 @@ theorem lbIso_pull_square {XA XB YA YB ZA ZB : Scheme.{0}} (L : LB XA) (M : LB X
 end GlobalTheory.EndLoc.HomFixUnr
 
 namespace GlobalTheory.EndLoc
-
 
 open GlobalTheory.EndLoc.HomFixUnr in
 theorem formallyUnramified_homFixRep : ∀ (S : Scheme.{0}) (A B : Over S) [GrpObj A] [IsCommMonObj A] [GrpObj B]

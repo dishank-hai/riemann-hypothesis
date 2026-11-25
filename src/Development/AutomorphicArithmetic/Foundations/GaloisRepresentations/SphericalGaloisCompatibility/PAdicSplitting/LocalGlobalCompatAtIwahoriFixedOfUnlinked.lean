@@ -334,10 +334,10 @@ theorem ideleNorm_eq (E : Type) [Field E] [NumberField E] [IsCMField E] (x : (Ad
 
 theorem main : ∀ (K M : Type) [Field K] [NumberField K] [IsCMField K] [Field M] [NumberField M] [IsCMField M] [Algebra K M] (a : ℕ) (χ : HChar (maximalRealSubfield K)), (∀ v : InfinitePlace (maximalRealSubfield K), χ.locInf v (-1) = (-1) ^ a) → ∃ χ' : HChar (maximalRealSubfield M), (∀ u : InfinitePlace (maximalRealSubfield M), χ'.locInf u (-1) = (-1) ^ a) ∧ ∀ x : Ideles M, (compNorm M χ').1 x = (compNorm K χ).1 (GroundTheory.Global.ideleNorm K M x) := by
   intro K M _ _ _ _ _ _ _ a χ hsign
-  letI : Algebra (maximalRealSubfield K) (maximalRealSubfield M) := (realHom K M).toAlgebra
-  haveI : IsScalarTower (maximalRealSubfield K) (maximalRealSubfield M) M :=
+  let : Algebra (maximalRealSubfield K) (maximalRealSubfield M) := (realHom K M).toAlgebra
+  have : IsScalarTower (maximalRealSubfield K) (maximalRealSubfield M) M :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
-  haveI : IsScalarTower (maximalRealSubfield K) K M :=
+  have : IsScalarTower (maximalRealSubfield K) K M :=
     IsScalarTower.of_algebraMap_eq fun _ => rfl
   refine ⟨normChar (maximalRealSubfield M) χ,
     fun u => (normChar_locInf χ u (IsTotallyReal.isReal u)).trans (hsign _), fun x => ?_⟩
@@ -557,9 +557,9 @@ theorem UpperTheory.Gal.NearKilling.weakRes :
   intro E M Ω _ _ _ _ _ _ _ _ _ _ _ _ _ l _ ι a π P hL r hr
   obtain ⟨hc, hss, hatt⟩ := hr
   refine ⟨hc.comp (UpperTheory.V.Af.continuous_restrictScalarsHom E M Ω), ?_, ?_⟩
-  · haveI := finiteIndex_range_res E M Ω
+  · have := finiteIndex_range_res E M Ω
     set H := (UpperTheory.V.Af.Bc.res E Ω M).range with hH
-    haveI : (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).FiniteIndex := finiteIndex_comap _ _
+    have : (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).FiniteIndex := finiteIndex_comap _ _
     refine isSSRep_of_finiteIndex _ (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)) ?_
     have hrange : ((UpperTheory.V.Af.Bc.res E Ω M).comp (H.normalCore.comap (UpperTheory.V.Af.Bc.res E Ω M)).subtype).range = H.normalCore := by
       ext x
@@ -888,7 +888,7 @@ private theorem pairwise_of_map {α β : Type*} (f : α → β) {r : β → β �
   induction t using Quot.inductionOn with
   | h l =>
     have h' : Multiset.Pairwise r ((l.map f : List β) : Multiset β) := h
-    haveI : Std.Symm r := ⟨fun _ _ e => hr e⟩
+    have : Std.Symm r := ⟨fun _ _ e => hr e⟩
     rw [Multiset.pairwise_coe_iff_pairwise, List.pairwise_map] at h'
     exact ⟨l, rfl, h'⟩
 
@@ -911,7 +911,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.mixedOf :
     MixedOf := by
   intro E Ω _ _ _ _ _ _ n π w σ hσ hfix hap A h rc hrc hm
   obtain ⟨a, ha, L⟩ := hrc
-  haveI : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
+  have : CharZero (w.adicCompletion E) := charZero_of_injective_algebraMap (algebraMap E _).injective
   have hg : IsGeneric σ.ρ := GlobalTheory.CuspRep.Generic.isGeneric_of_isLocComp E n π w σ hσ
   have hnu : ∀ (z : IrrGL (k := w.adicCompletion E)) (s : ℂ), IsGeneric z.rep → IsGeneric (z.nu s).rep :=
     fun z s hz => (isGeneric_congr (IrrGL.twEquiv z _ _)).1 ((isGeneric_twist_iff _).2 hz)
@@ -980,7 +980,7 @@ open UpperTheory.Gal.ToralGalois.R2
 theorem UpperTheory.Gal.ToralGalois.R2.recChars :
     UpperTheory.Gal.InertialTypesAlt.SuppIne → RecChars := by
   intro hSI M Ω _ _ _ _ _ A u h n T ξ hξ hsup
-  haveI : CharZero (u.adicCompletion M) := charZero_of_injective_algebraMap (algebraMap M _).injective
+  have : CharZero (u.adicCompletion M) := charZero_of_injective_algebraMap (algebraMap M _).injective
   have hsupx : HasSupport (IrrGL.of T.ρ T.smooth T.irred).rep (chars ξ hξ) :=
     hsup.of_equiv (IrrGL.equivOf T.ρ T.smooth T.irred)
   have hnu := GlobalTheory.RoadU.TwistSupp.supp_nu_chars (u.adicCompletion M) (IrrGL.of T.ρ T.smooth T.irred) n ξ
@@ -1061,7 +1061,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.toTor :
     UpperTheory.Gal.InertialTypesAlt.SuppBC → UpperTheory.Gal.NearKilling.UnrField → UpperTheory.Gal.NearKilling.AllLift → UpperTheory.Gal.NearKilling.IneNorm → InfLifts → RecChars → UpperTheory.Zero.LLC.RecTExists → ToTor := by
   intro hSupp hUnr hLift hIne hInf hChars hRec E Ω _ _ _ _ _ _ l _ ι n hn π χ hs r hr w σ hσ hQ hM A h rc hrc
   obtain ⟨p, hp, i, hi⟩ := hQ
-  haveI := hp
+  have := hp
   obtain ⟨hq, hsp⟩ := split_of_padic w p i hi
   have hf : 0 < n.factorial := Nat.factorial_pos n
   have hSfin : {u : HeightOneSpectrum (𝓞 E) | ¬ ∃ B, (CG.mk π).HasSat u B}.Finite := by
@@ -1071,7 +1071,7 @@ theorem UpperTheory.Gal.ToralGalois.R2.toTor :
   obtain ⟨Xf, hXT, hXw, -⟩ := hUnr E Ω w hsp _ hf _ hSfin
   obtain ⟨P, χ', hPL, hPs, hPr⟩ := hLift E Ω l n hn π χ hs _ (fun u hu => not_not.1 hu) Xf hXT
   obtain ⟨w', h', -⟩ := GlobalTheory.AboveL.exists_isPlaceOver_of_tower E Xf.K Ω A w h
-  haveI : w'.asIdeal.LiesOver w.asIdeal := ⟨(GlobalTheory.AboveL.comap_eq_of_placeOver h h').symm⟩
+  have : w'.asIdeal.LiesOver w.asIdeal := ⟨(GlobalTheory.AboveL.comap_eq_of_placeOver h h').symm⟩
   have hXfix := (hXw A h).1
   have hnorm := (hXw A h).2 w' h'
   obtain ⟨σ', hσ', -⟩ := LocEx.exists_isLocComp GlobalTheory.automorphicFormsFiniteGL Xf.K n P w'

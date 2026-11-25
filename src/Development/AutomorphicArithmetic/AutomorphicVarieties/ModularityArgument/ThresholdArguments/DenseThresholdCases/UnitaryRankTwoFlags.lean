@@ -691,15 +691,6 @@ section -- clump:auto
 
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af UpperTheory.V.Pr
 
-private theorem xa_norm {l : ℕ} [Fact l.Prime] (c : Coef l) (y : c.O) : ‖(y.1 : PadicAlgCl l)‖ ≤ 1 := by
-  have hz : IsIntegral ℤ_[l] y.1 := (Algebra.IsIntegral.isIntegral (R := ℤ_[l]) y).map c.O.val
-  have hq : IsIntegral ℚ_[l] y.1 := Algebra.IsIntegral.isIntegral _
-  have h0 : ‖(y.1 : PadicAlgCl l)‖ = spectralValue (minpoly ℚ_[l] y.1) := rfl
-  rw [h0, spectralValue_le_one_iff (minpoly.monic hq), ]
-  intro n
-  rw [minpoly.isIntegrallyClosed_eq_field_fractions' ℚ_[l] hz, Polynomial.coeff_map]
-  exact PadicInt.norm_le_one _
-
 private theorem xa_pow {l : ℕ} [Fact l.Prime] (c : Coef l) [Fr.IsCoef l c.O] :
     ∃ e : ℕ, maximalIdeal c.O ^ e ≤ Ideal.span {(l : c.O)} := by
   have hl0 : (l : c.O) ≠ 0 := fun h => by
@@ -723,7 +714,7 @@ private theorem xa_key {l : ℕ} [Fact l.Prime] (c : Coef l) {e : ℕ} (he : max
   have h2 : (((l : c.O) ^ N * y : c.O).1 : PadicAlgCl l) = ((l : ℕ) : PadicAlgCl l) ^ N * y.1 := by
     rw [Subalgebra.coe_mul, Subalgebra.coe_pow, show (((l : c.O)).1 : PadicAlgCl l) = ((l : ℕ) : PadicAlgCl l) from map_natCast c.O.val l]
   rw [h2, norm_mul, norm_pow]
-  exact mul_le_of_le_one_right (by positivity) (xa_norm c y)
+  exact mul_le_of_le_one_right (by positivity) (GlobalTheory.CoefCoord.norm_le_one c y)
 
 private theorem xa_top {l : ℕ} [Fact l.Prime] {Γ : Type} [TopologicalSpace Γ] (u : Γ → PadicAlgCl l)
     (H : ∀ (g₀ : Γ) (ε : ℝ), 0 < ε → ∀ᶠ g in nhds g₀, ‖u g - u g₀‖ < ε) : Continuous u := by
@@ -897,9 +888,6 @@ end -- clump:auto
 -- clump-header: {"m": "Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.COpenEx", "h": "module\n\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.ModularityArgument.ThresholdArguments.DenseThresholdCases.PointTheoremBaseObject\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.EveryPointSatisfiesFrameCondition\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.DimOf\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.EveryPointSatisfiesFrameConditionAlt\npublic import Development.AutomorphicArithmetic.AutomorphicVarieties.CurveDVRSpecialization.OrbitCount\nimport Mathlib.Algebra.Order.Floor.Extended\nimport Mathlib.Algebra.Order.Floor.Semifield\nimport Mathlib.Algebra.Order.Interval.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp\nimport Mathlib.Combinatorics.Enumerative.DyckWord\nimport Mathlib.Combinatorics.SimpleGraph.Triangle.Removal\nimport Mathlib.Data.NNRat.Floor\nimport Mathlib.Geometry.Euclidean.Volume.Basic\nimport Mathlib.NumberTheory.Chebyshev\nimport Mathlib.NumberTheory.Height.NumberField\nimport Mathlib.NumberTheory.Height.Projectivization\nimport Mathlib.NumberTheory.LucasLehmer\nimport Mathlib.NumberTheory.SelbergSieve\nimport Mathlib.RingTheory.Radical.NatInt\nimport Mathlib.Tactic.Echelon.Zsqrtd\nimport Mathlib.Tactic.Inclusion.Extension.Core.Core\nimport Mathlib.Tactic.Inclusion.Extension.Interval.BinarySplit\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Exp\nimport Mathlib.Tactic.Inclusion.Extension.IntervalDyadicReal.Hypotheses\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Basic\nimport Mathlib.Tactic.Inclusion.Extension.IntervalInt.Hypotheses\nimport Mathlib.Tactic.NormNum.Irrational\nimport Mathlib.Tactic.NormNum.IsCoprime\nimport Mathlib.Tactic.NormNum.IsSquare\nimport Mathlib.Tactic.NormNum.LegendreSymbol\nimport Mathlib.Tactic.NormNum.ModEq\nimport Mathlib.Tactic.NormNum.NatFib\nimport Mathlib.Tactic.NormNum.NatLog\nimport Mathlib.Tactic.NormNum.NatSqrt\nimport Mathlib.Tactic.NormNum.Ordinal\nimport Mathlib.Tactic.NormNum.Prime\nimport Mathlib.Tactic.NormNum.RealSqrt\n\n"}
 section -- clump:auto
 @[expose] public section
-
-
-
 
 section
 open NumberField Formalism.ConjugateSelfDual ReciprocityTheory.Gal GlobalTheory.GalOfCusp IsLocalRing UpperTheory.V.HV UpperTheory.V.U3 UpperTheory.V.Base UpperTheory.V.Af

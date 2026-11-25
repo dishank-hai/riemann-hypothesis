@@ -57,6 +57,16 @@ theorem orderAtLeastLocus_comap_iso_hom_eq_preimage {X Y : Scheme.{u}} (e : X �
   simp only [Set.mem_preimage, mem_orderAtLeastLocus_iff]
   exact ⟨fun hm => le_trans hm h2, fun hm => le_trans hm h1⟩
 
+/-- Pulling an ideal back along a scheme isomorphism preserves emptiness of the order locus. -/
+theorem orderAtLeastLocus_comap_iso_eq_empty_iff {X Y : Scheme.{u}} (e : X ≅ Y)
+    (J : Y.IdealSheafData) (n : ℕ) :
+    orderAtLeastLocus (J.comap e.hom) n = ∅ ↔ orderAtLeastLocus J n = ∅ := by
+  have hsurj : Function.Surjective (⇑e.hom.base) :=
+    fun y => ⟨e.inv.base y, Scheme.inv_hom_apply e y⟩
+  rw [orderAtLeastLocus_comap_iso_hom_eq_preimage]
+  simpa only [Set.preimage_empty] using
+    (Set.preimage_eq_preimage (s := orderAtLeastLocus J n) (t := ∅) hsurj)
+
 theorem strictTransform_comp_iso_hom {X X₁ Y : Scheme.{u}} (π : X₁ ⟶ X) (e : X ≅ Y)
     (Z D : Y.IdealSheafData) :
     Blowup.strictTransform (π ≫ e.hom) Z D = Blowup.strictTransform π (Z.comap e.hom) (D.comap e.hom) := by

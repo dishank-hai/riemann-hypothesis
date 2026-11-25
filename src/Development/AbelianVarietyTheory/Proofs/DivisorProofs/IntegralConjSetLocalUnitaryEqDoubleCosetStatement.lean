@@ -841,11 +841,6 @@ open Polynomial Matrix GlobalTheory.LatOrb
 
 namespace GlobalTheory.LatOrb
 
-theorem herm_mulVec_eq_adj {K : Type} [Field K] (σ : K →+* K)
-    {n : ℕ} (x : Matrix (Fin n) (Fin n) K) (y m : Fin n → K) :
-    herm σ y (x *ᵥ m) = herm σ ((x.map σ)ᵀ *ᵥ y) m := by
-  apply _root_.GlobalTheory.LatOrb.herm_mulVec_right <;> assumption
-
 theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] [Algebra O K] (σ : K →+* K),
     (∀ x, σ (σ x) = x) → ∀ (n : ℕ) (x : Matrix (Fin n) (Fin n) K), IsUnit x →
     ∀ M : Submodule O (Fin n → K), SelfDual O σ M → SelfDual O σ (matLat O x M) →
@@ -857,11 +852,11 @@ theorem matLat_adj_mul_eq_of_selfDual : ∀ {O K : Type} [CommRing O] [Field K] 
     rw [hxM y, hM ((x.map σ)ᵀ *ᵥ y)]
     constructor
     · intro h m hm
-      rw [← herm_mulVec_eq_adj]
+      rw [← GlobalTheory.LatOrb.herm_mulVec_right]
       exact h _ ((mem_matLat x M _).2 ⟨m, hm, rfl⟩)
     · intro h w hw
       obtain ⟨m, hm, rfl⟩ := (mem_matLat x M w).1 hw
-      rw [herm_mulVec_eq_adj]
+      rw [GlobalTheory.LatOrb.herm_mulVec_right]
       exact h m hm
   have hdet : IsUnit ((x.map σ)ᵀ * x).det := by
     have e : (x.map σ).det = σ x.det := (RingHom.map_det σ x).symm

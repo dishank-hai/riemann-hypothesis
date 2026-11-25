@@ -23,13 +23,8 @@ theorem eq_of_forall_mem_basicOpen_iff {X : Scheme.{0}} {U : X.Opens} (hU : IsAf
     {z z' : X} (hz : z ∈ U) (hz' : z' ∈ U)
     (h : ∀ f : Γ(X, U), z ∈ X.basicOpen f ↔ z' ∈ X.basicOpen f) : z = z' := by
   have key : ∀ (x : U) (f : Γ(X, U)),
-      f ∉ (hU.primeIdealOf x).asIdeal ↔ x.1 ∈ X.basicOpen f := by
-    intro x f
-    have e1 := hU.fromSpec_primeIdealOf x
-    have e2 := hU.fromSpec_preimage_basicOpen f
-    have : hU.primeIdealOf x ∈ hU.fromSpec ⁻¹ᵁ X.basicOpen f ↔ x.1 ∈ X.basicOpen f := by
-      rw [← e1]; rfl
-    rw [← this, e2]; rfl
+      f ∉ (hU.primeIdealOf x).asIdeal ↔ x.1 ∈ X.basicOpen f :=
+    fun x f => (hU.mem_basicOpen_iff_notMem_primeIdealOf x f).symm
   have e : hU.primeIdealOf ⟨z, hz⟩ = hU.primeIdealOf ⟨z', hz'⟩ := by
     apply PrimeSpectrum.ext
     ext f

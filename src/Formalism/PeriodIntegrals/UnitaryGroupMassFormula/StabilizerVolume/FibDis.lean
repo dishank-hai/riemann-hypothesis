@@ -41,10 +41,6 @@ export PI.VolStabSW.Glue (G G_spec)
 variable [OpensMeasurableSpace X] [T2Space X] [LocallyCompactSpace X]
   [IsFiniteMeasureOnCompacts ν] [ν.IsOpenPosMeasure]
 
-theorem dens_unique {g1 g2 : X → ℝ} (h1 : Continuous g1) (h2 : Continuous g2)
-    (h : ∀ S, IsCompact S → ∫ b in S, g1 b ∂ν = ∫ b in S, g2 b ∂ν) : g1 = g2 :=
-  _root_.PI.VolStabSW.Glue.dens_unique h1 h2 h
-
 export PI.VolStabSW.Glue (dens_nonneg)
 
 variable [IsFiniteMeasureOnCompacts μ] [OpensMeasurableSpace V]

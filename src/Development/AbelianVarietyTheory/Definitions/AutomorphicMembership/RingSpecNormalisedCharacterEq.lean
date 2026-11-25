@@ -351,11 +351,6 @@ structure NdSpec (Pl : PlSide D) (M : MtFam D) (C : NChoice D) (big : D.what₂.
   nbr_iq : ∀ i w (hw : w ∈ placesOver D.host.E (X.nd.l i)) (x : X.nd.O i),
     iq i (algebraMap (X.nd.O i) (FractionRing (X.nd.O i)) x) = (((nbr i w hw).toLL x : ↥(nbr i w hw).LL.1) : Loc.Om (X.nd.l i))
   bj : ∀ i, (D.what₂.MjLat (X.nd.j i)).gen → X.nd.Bj i
-  bj_span : ∀ i, Submodule.span (X.nd.O i) (Set.range (bj i)) = ⊤
-  bj_rel : ∀ i (s : D.what₂.O →+* X.nd.O i),
-    (∀ y, algebraMap (X.nd.O i) (FractionRing (X.nd.O i)) (s y) = X.nd.embK i (D.what₂.OtoLL y)) →
-    ∀ c : (D.what₂.MjLat (X.nd.j i)).gen → X.nd.O i, ∑ g, c g • bj i g = 0 ↔
-      c ∈ Submodule.span (X.nd.O i) ((fun r => s ∘ r) '' latRel (D.what₂.MjLat (X.nd.j i)))
 
 
 

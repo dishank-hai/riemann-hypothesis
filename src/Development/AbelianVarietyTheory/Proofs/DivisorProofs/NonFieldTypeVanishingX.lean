@@ -444,9 +444,6 @@ open GlobalTheory.IndefiniteRowSideFullHecke.PlusPolynomialRoots GlobalTheory.Tr
 open GlobalTheory.IndefiniteRowSideFullHecke.AdelicUnitaryGroups (mapH diagH)
 open scoped TensorProduct ComplexConjugate Matrix
 
-theorem _root_.GlobalTheory.T.rationalClassTerm_eq_volume_mul_prod_orbitalIntegrals : ∀ (F E : Type) [Field F] [NumberField F] [Field E] [NumberField E] [Algebra F E] (σ : E →ₐ[F] E), IsCMExt F E σ → ∀ (r : ℕ) (P : PPol σ r) (J : Matrix (Fin r) (Fin r) E), IsHermND σ J → ∀ (L : Submodule (𝓞 E) (Fin r → E)) [Submodule.IsFullLattice E L], ∀ μa μf μ, IsRestrictedProd σ J L μa μf μ → ∀ fa ff, (∀ w, Continuous (fa w) ∧ HasCompactSupport (fa w)) → IsFinFamily σ J L ff → ∀ dta dtf dt, IsTorusMeas P dta dtf dt → ∀ γ : GRat σ J, γ.1.1.charpoly = P.1 → ∀ (qf : ∀ v : HeightOneSpectrum (𝓞 F), XSet P (Fv F v) J) (qa : ∀ w : InfinitePlace F, XSet P w.Completion J), (∀ v, HasCls P _ J (proj σ J v (ratEmb σ J γ)) (qf v).1) → (∀ w, HasCls P _ J (projArch σ J w (ratEmb σ J γ)) (qa w).1) → Integrable (descend (ratPts σ J) (GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.classKernel (ratPts σ J) (ratEmb σ J γ) (tensor σ J fa ff))) (quotMeasure (ratPts σ J) μ) ∧ ∫ q, descend (ratPts σ J) (GlobalTheory.IndefiniteRowSideFullHecke.NonFieldTypeVanishingAlt.classKernel (ratPts σ J) (ratEmb σ J γ) (tensor σ J fa ff)) q ∂quotMeasure (ratPts σ J) μ = ((torVol P dt).toReal : ℂ) * ((∏ᶠ v, orbCls (μf v) (dtf v) (ff v) (qf v)) * ∏ w, orbCls (μa w) (dta w) (fa w) (qa w)) := by
-  intro F E _ _ _ _ _ σ hcm r P J hJ L _ μa μf μ hμ fa ff hfa hff dta dtf dt hdt γ hγ qf qa hqf hqa
-  exact GlobalTheory.TrClassTerm.class_term F E σ hcm r P J hJ L μa μf μ hμ fa ff hfa hff dta dtf dt hdt γ hγ qf qa hqf hqa
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.RationalClassTermEqVolumeMulProdOrbitalIntegralsStatement =====
@@ -895,7 +892,6 @@ theorem ne_zero_of_tensor (hf : IsFinFamily σ J L ff) {y : GAd σ J} (hy : tens
   rw [tensor_eq_infFin] at hy
   simpa only [projFinLoc_projFin] using (hf.tensorFin_ne_zero_iff _).1 (right_ne_zero_of_mul hy) v
 
-
 omit [NumberField F] [NumberField E] in
 theorem charpoly_eq_of_isConj {γ δ : GRat σ J} (h : IsConj γ δ) : δ.1.1.charpoly = γ.1.1.charpoly := by
   obtain ⟨c, rfl⟩ := isConj_iff.1 h
@@ -910,7 +906,7 @@ theorem integral_polKernel : ∀ (E : Type) [Field E] [NumberField E] (F : Subfi
   obtain ⟨H1, H2, H3⟩ := _root_.GlobalTheory.TrEll.RatClasses.rat_classes_iff_local E F σ hCM hun r P J hJ
   obtain ⟨Ff, Fa⟩ := _root_.GlobalTheory.SqCls.finite_cls F E σ hCM r P
   have hae := _root_.GlobalTheory.TrEll.eventually_unitLoc_orbCls F E σ hCM r P J hJ L
-  have hcl := GlobalTheory.T.rationalClassTerm_eq_volume_mul_prod_orbitalIntegrals F E σ hCM r P J hJ L μa μf μ hμ fa ff hfa hff dta dtf dt hdt
+  have hcl := GlobalTheory.TrClassTerm.class_term F E σ hCM r P J hJ L μa μf μ hμ fa ff hfa hff dta dtf dt hdt
   let I := {p : (∀ v : HeightOneSpectrum (𝓞 F), XSet P (Fv F v) J) × (∀ w : InfinitePlace F, XSet P w.Completion J) //
     ∀ᶠ v in cofinite, (p.1 v).1 = 1}
   obtain ⟨hsupp, hsum⟩ := finsum_restrictedFamily_eq_prod_finsum (HeightOneSpectrum (𝓞 F)) (InfinitePlace F)
@@ -987,7 +983,6 @@ open scoped TensorProduct ComplexConjugate Matrix
 noncomputable section
 
 namespace GlobalTheory.TrEllSum
-
 
 open Classical in
 theorem finsum_subtype_ite {G : Type} (p : G → Prop) {u : G → ℂ} (hu : (Function.support u).Finite) :
@@ -1172,7 +1167,6 @@ theorem productClauseX {S : D.what₂.Tau → SPar} {M : DSModel V S} {T : TypeD
   have hc := continuous_of_mem_ccAd (tensor_mem_ccAd ha.mem hf.isFinFamily)
   exact @_root_.GlobalTheory.ClassUnfold.hasClassInt_of_hasOrbInt (GA D V) _ _ _ _ _ _ _ _ (GQ V) _ (ratEmb D.sp.cm.sig V.gram γ) (ratEmb_mem_GQ γ)
     (isMulCommutative_cent_ratEmb hreg) μ hμ.2.2.1 dt htt 𝓣 h𝓣 hvol _ _ hc.1 hc.2 hO 𝓕 h𝓕
-
 
 theorem nonFieldTypeVanishingX : NonFieldTypeVanishingX := by
   intro D V _ S M T U hH μa μf μ hμ fa ff ha hf γ hγ

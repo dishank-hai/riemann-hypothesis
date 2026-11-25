@@ -671,7 +671,6 @@ variable {R₀ : Type} [CommRing R₀] {p : ℕ} [Fact p.Prime] {g : ℕ} {B : B
 
 end
 
-
 open TensorProduct IsLocalRing Matrix in
 theorem _root_.GlobalTheory.evImg_isLat_subring :
   (∀ {R₀ : Type} [CommRing R₀] {p : ℕ} [Fact p.Prime] {g : ℕ} {B : _root_.ReciprocityTheory.PGsh.BX R₀} {Tw : _root_.ReciprocityTheory.PGsh.ATowerL R₀ p} {Dt : _root_.ReciprocityTheory.PGsh.DualTower Tw} [Algebra ℤ_[p] (Tw.O : Type)] {Oe : Type} [CommRing Oe] [Algebra ℤ_[p] Oe] {σ : Oe ≃ₐ[ℤ_[p]] Oe} {cp : (Tw.O : Type)} (D : _root_.ReciprocityTheory.PGsh.Be2.Dat p g B Tw Dt Oe σ cp), _root_.ReciprocityTheory.PGsh.Be2.EvLatStatement D) := by
@@ -1710,13 +1709,6 @@ private lemma val_sum_mul_smul {M ι : Type} [AddCommGroup M] [Fintype ι] (x : 
   rw [h, val_natCast_smul x hx, Finset.sum_smul]
   simp only [mul_smul]
 
-private lemma ptMap_spec (D : Dat p g B Tw Dt Oe σ cp) (t : Nb p g) :
-    (D.ptMap t).comp (D.fin.sO _) = LHom.id Tw.O ∧ B.map (D.ptMap t) (D.fin.y _) = ptOf B D.L.τ t ∧
-      ∀ j (φ' : LHom (D.fin.AAx j) Tw.O), φ'.comp (D.fin.sO j) = LHom.id Tw.O →
-        B.map φ' (D.fin.y j) = ptOf B D.L.τ t → j = D.ptIdx t ∧ HEq φ' (D.ptMap t) :=
-  Classical.choose_spec (Classical.choose_spec
-    (D.fin.univ Tw.O (LHom.id Tw.O) (ptOf B D.L.τ t) (D.pt_p t)))
-
 private lemma tau_p (D : Dat p g B Tw Dt Oe σ cp) (j : Ix g) : p • D.L.τ j 0 = 0 := by
   have h := D.L.τ_tors j 0
   rwa [zero_add, pow_one] at h
@@ -1757,8 +1749,8 @@ private lemma evAll_act (D : Dat p g B Tw Dt Oe σ cp) (C : Type) [Field C]
     ((mem_torP B p _).1 (Subtype.property _))
   choose m α hs hy _ using key
   refine ⟨fun i => (α i).1 (F (m i)), fun t => ?_⟩
-  obtain ⟨h1, h2, -⟩ := ptMap_spec D t
-  obtain ⟨-, -, h3⟩ := ptMap_spec D (((D.H.ρ a).map PadicInt.toZMod) *ᵥ t)
+  obtain ⟨h1, h2, -⟩ := GlobalTheory.CotPoints.ptMap_spec D t
+  obtain ⟨-, -, h3⟩ := GlobalTheory.CotPoints.ptMap_spec D (((D.H.ρ a).map PadicInt.toZMod) *ᵥ t)
   have e1 : ((D.ptMap t).comp (α (D.ptIdx t))).comp (D.fin.sO _) = LHom.id Tw.O := by
     rw [← h1, ← hs (D.ptIdx t)]
     rfl

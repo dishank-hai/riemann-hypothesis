@@ -51,11 +51,7 @@ theorem exists_rigPull_inv {S : Scheme.{0}} (P : PolAV S) (rig : LB.Gen (P.L.pul
 variable {o Ω : Type} [CommRing o] [Field Ω] [Algebra o Ω]
 
 theorem pt_neg {S : ThetaSys o Ω} (ρ : S.Real) (a : S.Gam) : ρ.pt (-a) = (ρ.pt a)⁻¹ := by
-  have h0 : ρ.pt 0 = 1 := by
-    have h := ρ.pt_add 0 0
-    rw [add_zero] at h
-    have h' : ρ.pt 0 * ρ.pt 0 = ρ.pt 0 * 1 := by rw [_root_.mul_one]; exact h.symm
-    exact mul_left_cancel h'
+  have h0 : ρ.pt 0 = 1 := (GlobalTheory.ThetaReal.pt_nsmul ρ.pt ρ.pt_add).1
   have h := ρ.pt_add (-a) a
   rw [neg_add_cancel, h0] at h
   exact eq_inv_of_mul_eq_one_left h.symm

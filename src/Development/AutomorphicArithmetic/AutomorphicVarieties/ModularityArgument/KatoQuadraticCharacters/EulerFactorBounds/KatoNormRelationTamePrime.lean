@@ -1143,16 +1143,12 @@ open GlobalTheory.KZ GlobalTheory.K4 UpperTheory.V.Z.Kato.Sym UpperTheory.Kd.K4 
 
 namespace UpperTheory.V.Z.Kato.Nb.XiHecke
 
-private theorem vc {M k : ℕ} [NeZero M] (h : k ∣ M) (a : ZMod M) :
-    ((a.val : ℕ) : ZMod k) = ZMod.castHom h (ZMod k) a := by
-  rw [ZMod.castHom_apply, ZMod.cast_eq_val]
-
 private theorem ent {M k : ℕ} [NeZero M] (hk : k ∣ M) (h : Matrix (Fin 2) (Fin 2) ℤ) (m : Matrix (Fin 2) (Fin 2) (ZMod M))
     (i j : Fin 2) : (((m * h.map (Int.castRingHom (ZMod M))) i j).val : ZMod k) =
       ((m i 0).val : ZMod k) * (h 0 j : ZMod k) + ((m i 1).val : ZMod k) * (h 1 j : ZMod k) := by
   have h0 : (m * h.map (Int.castRingHom (ZMod M))) i j = m i 0 * (h 0 j : ZMod M) + m i 1 * (h 1 j : ZMod M) := by
     simp [Matrix.mul_apply, Fin.sum_univ_two]
-  rw [h0, vc hk, vc hk, vc hk, map_add (f := _), map_mul, map_mul, map_intCast, map_intCast]
+  rw [h0, UpperTheory.V.Z.Kato.Nb.XiAction.vc hk, UpperTheory.V.Z.Kato.Nb.XiAction.vc hk, UpperTheory.V.Z.Kato.Nb.XiAction.vc hk, map_add (f := _), map_mul, map_mul, map_intCast, map_intCast]
 
 private theorem cnd_iff (l N M : ℕ) [Fact l.Prime] [NeZero M] (hN : N ∣ M) (hl : l ∣ M) (g : SL(2, ℤ))
     (h : Matrix (Fin 2) (Fin 2) ℤ) (hN1 : ((h 1 0 : ℤ) : ZMod N) = 0) (hl1 : ((h 1 0 : ℤ) : ZMod l) = 0)
@@ -1170,7 +1166,7 @@ private theorem wt_dvd (l n M w p : ℕ) [Fact l.Prime] [NeZero M] (hl : l ^ n �
         (((m * h.map (Int.castRingHom (ZMod M))) 0 1).val : ℤ_[l]) * u 1) ^ w) := by
   rw [← Ideal.mem_span_singleton, ← PadicInt.ker_toZModPow, RingHom.mem_ker]
   have ed : (d.val : ZMod (l ^ n)) = p * (d'.val : ZMod (l ^ n)) := by
-    rw [vc hl d, hd, map_mul, map_natCast, ← vc hl]
+    rw [UpperTheory.V.Z.Kato.Nb.XiAction.vc hl d, hd, map_mul, map_natCast, ← UpperTheory.V.Z.Kato.Nb.XiAction.vc hl]
   have ev : ∀ i, (mZl l h *ᵥ u) i = (h i 0 : ℤ_[l]) * u 0 + (h i 1 : ℤ_[l]) * u 1 := by
     intro i
     simp [mZl, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
@@ -1192,7 +1188,7 @@ private theorem cd_row (N M₀ M p : ℕ) [NeZero N] [NeZero M₀] [NeZero M] (h
       ext i j
       fin_cases i <;> fin_cases j <;> simp [Matrix.natCast_apply]
     rw [this, Matrix.mul_smul, Matrix.mul_one, Matrix.vecMul_smul, Matrix.smul_vecMul]
-  · rw [vc hN, Matrix.map_apply, eq_intCast, map_intCast]; exact hN1
+  · rw [UpperTheory.V.Z.Kato.Nb.XiAction.vc hN, Matrix.map_apply, eq_intCast, map_intCast]; exact hN1
 
 section
 

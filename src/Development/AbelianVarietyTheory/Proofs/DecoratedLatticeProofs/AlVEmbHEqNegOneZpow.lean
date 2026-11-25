@@ -18,10 +18,6 @@ noncomputable section
 
 namespace GlobalTheory.SemiTrace
 
-theorem tauE_star (D : D7) (τ : D.what₂.Tau) (x : D.host.E) :
-    tauE D τ (star x) = starRingEnd ℂ (tauE D τ x) :=
-  D.sp.cm.cmUnram.2.1 _ x
-
 theorem sum_two_re_tauE (D : D7) (e : D.host.E) :
     ∑ t, (((2 * (tauE D t e).re : ℝ)) : ℂ) = ((Algebra.trace ℚ D.host.E e : ℚ) : ℂ) := by
   apply _root_.GlobalTheory.MixedTerm.DerLaw.sum_two_re_tauE <;> assumption
@@ -58,7 +54,7 @@ theorem alV_embH_eq_neg_one_zpow : ∀ (D : D7) (ψ : AddChar (AF D.host.F) ℂ)
 
     simp only [GlobalTheory.LatVac.hRat, hP.gS, hP.gT, inv_one, Matrix.one_apply, ite_mul, one_mul, zero_mul, mul_ite, mul_one, mul_zero,
     Finset.sum_ite_eq, Finset.mem_univ, ite_true, map_sum, hs]
-    simp only [apply_ite (⇑(tauE D τ)), map_zero, map_mul, tauE_star]
+    simp only [apply_ite (⇑(tauE D τ)), map_zero, map_mul, GlobalTheory.FockCompare.tauE_star]
     push_cast
     rw [Finset.sum_comm]
     calc _ = ∑ j, ∑ i, ((Complex.normSq (tauE D τ (M i j)) : ℝ) : ℂ) := by

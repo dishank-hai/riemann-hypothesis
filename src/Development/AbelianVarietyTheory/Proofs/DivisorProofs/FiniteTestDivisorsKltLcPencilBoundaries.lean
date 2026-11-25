@@ -404,13 +404,6 @@ theorem schOrd_prod_zpow [IsLocallyNoetherian Y] {ι : Type} (s : Finset ι)
   rw [smul_eq_mul]
   rfl
 
-theorem schOrd_inv [IsLocallyNoetherian Y] (g : Y.functionFieldˣ) (v : Y) :
-    Scheme.ord ((g⁻¹ : Y.functionFieldˣ) : Y.functionField) v =
-      - Scheme.ord (g : Y.functionField) v := by
-  have h := congrArg Multiplicative.toAdd (map_inv (schOrdHom v) g)
-  rw [toAdd_inv] at h
-  exact h
-
 variable {k : Type} [Field k] {q : Y ⟶ Sp k}
 
 def divOrdHom (E : DivOver q) : Y.functionFieldˣ →* Multiplicative ℤ where
@@ -427,7 +420,6 @@ theorem divOrd_prod_zpow (E : DivOver q) {ι : Type} (s : Finset ι) (u : ι →
   rfl
 
 end GlobalTheory.Discrepancy.MonoOrd
-
 
 open GlobalTheory.Discrepancy.MonoOrd in
 theorem GlobalTheory.Discrepancy.MonoOrd.ord_eq_sum_of_monomial : ∀ {k : Type} [Field k] {Y : Scheme.{0}} [IsIntegral Y] [IsLocallyNoetherian Y]
@@ -464,7 +456,7 @@ theorem GlobalTheory.Discrepancy.MonoOrd.ord_eq_sum_of_monomial : ∀ {k : Type}
     (E.ord_nonneg_iff g).2 (hE _ (regAt_of_forall_coheight_eq_one fun z hz h1 =>
       (GlobalTheory.RegCodimOne.regAt_iff_ord_nonneg h1 g.ne_zero).2 (hg z hz h1).ge))
   have h0 := hreg ψ hord
-  have h0' := hreg ψ⁻¹ fun v hv h1 => by rw [schOrd_inv, hord v hv h1, neg_zero]
+  have h0' := hreg ψ⁻¹ fun v hv h1 => by rw [GlobalTheory.Cartier.MultEff.ord_inv, hord v hv h1, neg_zero]
   rw [E.ord_inv] at h0'
   have hψ0 : E.ord ψ = 0 := by omega
   rw [hψ, E.ord_mul, divOrd_prod_zpow] at hψ0

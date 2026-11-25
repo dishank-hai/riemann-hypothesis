@@ -1,7 +1,6 @@
 module
 
 public import ReciprocityTheory.ReductiveGroups.ArithmeticGeometry.BirationalGeometry.ToroidalCompactification.TwoWeightEqOneAddRoot
-import Mathlib.AlgebraicGeometry.Morphisms.SchemeTheoreticallyDominant
 import Development.AbelianVarietyTheory.PublishedTheorems.Divisors₂.DenseInterior
 
 @[expose] public section

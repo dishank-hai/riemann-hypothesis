@@ -554,21 +554,12 @@ private theorem inv_mul_comm_of_mul_comm' {x N : Matrix (Fin n) (Fin n) E} (hx :
     _ = N * x⁻¹ := by rw [← mul_assoc, Matrix.nonsing_inv_mul x hx, one_mul]
 
 variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ} in
-private theorem norm_det_le_one_of_entries_norm_le_one' {x : Matrix (Fin n) (Fin n) E}
-    (hx : ∀ i j, ‖x i j‖ ≤ 1) : ‖x.det‖ ≤ 1 := by
-  rw [Matrix.det_apply]
-  refine IsUltrametricDist.norm_sum_le_of_forall_le_of_nonneg zero_le_one fun σ _ => ?_
-  rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
-    simp only [h, one_smul, Units.neg_smul, norm_neg, norm_prod] <;>
-    exact Finset.prod_le_one₀ (fun _ _ => norm_nonneg _) fun i _ => hx _ _
-
-variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ} in
 private theorem inv_entries_norm_le_one_of_norm_det_one {x : Matrix (Fin n) (Fin n) E}
     (hx : ∀ i j, ‖x i j‖ ≤ 1) (hd : ‖x.det‖ = 1) : ∀ i j, ‖x⁻¹ i j‖ ≤ 1 := by
   intro i j
   rw [Matrix.inv_def, Matrix.smul_apply, smul_eq_mul, norm_mul, Ring.inverse_eq_inv', norm_inv,
     hd, inv_one, one_mul, Matrix.adjugate_apply]
-  apply norm_det_le_one_of_entries_norm_le_one'
+  apply GlobalTheory.norm_det_le_one_of_entries_le_one
   intro k l
   rw [Matrix.updateRow_apply]
   split_ifs
@@ -737,10 +728,6 @@ open GlobalTheory.UnitDiscAlg
 
 namespace GlobalTheory.UnitDiscAlg
 
-theorem integ_det_le {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {m : ℕ}
-    (y : Matrix (Fin m) (Fin m) E) (hy : ∀ i j, ‖y i j‖ ≤ 1) : ‖y.det‖ ≤ 1 := by
-  apply _root_.GlobalTheory.ValDecomp.norm_det_le_one_of_entries_norm_le_one' <;> assumption
-
 theorem isUnit_and_integ_inv_of_norm_det_eq_one :
     ∀ (E : Type) [NontriviallyNormedField E] [IsUltrametricDist E] (n : ℕ)
       (x : Matrix (Fin n) (Fin n) E), (∀ i j, ‖x i j‖ ≤ 1) → ‖x.det‖ = 1 →
@@ -754,7 +741,7 @@ theorem isUnit_and_integ_inv_of_norm_det_eq_one :
   refine ⟨hu, fun i j => ?_⟩
   rw [Matrix.inv_def, Ring.inverse_eq_inv', Matrix.smul_apply, smul_eq_mul, norm_mul, norm_inv,
     hdet, inv_one, one_mul, Matrix.adjugate_apply]
-  apply integ_det_le
+  apply GlobalTheory.norm_det_le_one_of_entries_le_one
   intro a b
   rw [Matrix.updateRow_apply]
   split_ifs
@@ -1207,13 +1194,6 @@ variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ}
 
 open Matrix in
 variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ} in
-theorem _root_.GlobalTheory.TwIntegral.intg_inv {A : Matrix (Fin n) (Fin n) E}
-    (hA : ∀ i j, ‖A i j‖ ≤ 1) (hd : ‖A.det‖ = 1) :
-    ∀ i j, ‖A⁻¹ i j‖ ≤ 1 := by
-  apply _root_.GlobalTheory.ValDecomp.inv_entries_norm_le_one_of_norm_det_one <;> assumption
-
-open Matrix in
-variable {E : Type} [NontriviallyNormedField E] [IsUltrametricDist E] {n : ℕ} in
 theorem _root_.GlobalTheory.TwIntegral.isUnit_of_norm_det {A : Matrix (Fin n) (Fin n) E} (hd : ‖A.det‖ = 1) :
     IsUnit A := by
   rw [isUnit_iff_isUnit_det]
@@ -1235,7 +1215,7 @@ private theorem theta_integral_of_integral_of_norm_det_one (F E : Type)
     rw [_root_.GlobalTheory.Tw.Model.Phi_apply']
     split_ifs <;> simp
   have hΦt : ∀ i j, ‖(_root_.GlobalTheory.Tw.Phi n E)ᵀ i j‖ ≤ 1 := fun i j => hΦ j i
-  have hinv := _root_.GlobalTheory.TwIntegral.intg_inv hg hd
+  have hinv := _root_.GlobalTheory.ValDecomp.inv_entries_norm_le_one_of_norm_det_one hg hd
   have hH : ∀ i j, ‖(g⁻¹)ᴴ i j‖ ≤ 1 := by
     intro i j
     rw [conjTranspose_apply, _root_.GlobalTheory.JR.Unram.norm_star F]
@@ -1477,8 +1457,8 @@ theorem _root_.GlobalTheory.TwIntegral.integral_twConj_mem_cent_mul : ∀ (F E :
   have hsi : ∀ i j, ‖(_root_.GlobalTheory.Tw.adj δ c * c) i j‖ ≤ 1 := by
     rw [hs]
     exact _root_.GlobalTheory.UnitDiscAlg.integ_mul (_root_.GlobalTheory.UnitDiscAlg.integ_mul
-      (_root_.GlobalTheory.UnitDiscAlg.integ_mul hδ hθk) (_root_.GlobalTheory.TwIntegral.intg_inv hx' hx'd))
-      (_root_.GlobalTheory.TwIntegral.intg_inv hk hkd)
+      (_root_.GlobalTheory.UnitDiscAlg.integ_mul hδ hθk) (_root_.GlobalTheory.ValDecomp.inv_entries_norm_le_one_of_norm_det_one hx' hx'd))
+      (_root_.GlobalTheory.ValDecomp.inv_entries_norm_le_one_of_norm_det_one hk hkd)
   have hsd : ‖(_root_.GlobalTheory.Tw.adj δ c * c).det‖ = 1 := by
     rw [hs]
     simp [det_mul, det_nonsing_inv, Ring.inverse_eq_inv', hδd, hθkd, hx'd, hkd]
@@ -1649,7 +1629,7 @@ theorem eq_twCent_mul_KGL : ∀ (E : Type) [Field E] [NumberField E] [IsCMField 
     intro h h1 h2
     refine (hmem (Ov E w) h).2 ⟨fun i j => (hle1 _).1 (h1 i j), fun i j => ?_⟩
     rw [Matrix.coe_units_inv]
-    exact (hle1 _).1 (GlobalTheory.TwIntegral.intg_inv h1 h2 i j)
+    exact (hle1 _).1 (GlobalTheory.ValDecomp.inv_entries_norm_le_one_of_norm_det_one h1 h2 i j)
   obtain ⟨hy1, hy2⟩ := hint y hy
   obtain ⟨hg1, hg2⟩ := hint _ hyg
   have htw : GlobalTheory.Tw.twConj g.val y.val = (g⁻¹ * y * thL n w g).val := by

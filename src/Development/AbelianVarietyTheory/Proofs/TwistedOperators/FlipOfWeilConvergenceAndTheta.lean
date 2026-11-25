@@ -165,11 +165,6 @@ def height : Node → ℤ
 theorem height_tgt {m : ℕ} {t : T} {a : Arrow T} (h : IsGridArrow m t a) : height a.tgt = height a.src + 1 := by
   rcases h with ⟨i, j, -, -, rfl⟩ | ⟨i, j, -, -, rfl⟩ <;> simp [height] <;> push_cast <;> ring
 
-theorem arrows_comp {X Y : Node} (p : Path T X Y) :
-    ∀ {Z : Node} (q : Path T Y Z), (p.comp q).arrows = p.arrows ++ q.arrows
-  | _, .nil => by simp [Path.comp, Path.arrows]
-  | _, .snoc a q => by simp [Path.comp, Path.arrows, arrows_comp p q]
-
 theorem onGrid_snoc {m : ℕ} {t : T} {X : Node} {a : Arrow T} {p : Path T X a.src} :
     OnGrid m t (.snoc a p) ↔ OnGrid m t p ∧ IsGridArrow m t a := by
   simp [OnGrid, Path.arrows, or_imp, forall_and]
@@ -275,10 +270,10 @@ theorem cut_at_square : ∀ {T : Type} (m : ℕ) (t : T) (i j : ℕ), i < m → 
   intro T m t i j hi hj X Y p hp hpass
   obtain ⟨A, Bp, rfl⟩ := exists_cut p hp hpass
   have harr : ((A.comp (routeSmall t i j)).comp Bp).arrows = A.arrows ++ [.down t i j, .right i j] ++ Bp.arrows := by
-    simp [arrows_comp, Path.arrows, routeSmall, Path.one]
+    simp [GlobalTheory.FlipRun.arrows_comp_eq, Path.arrows, routeSmall, Path.one]
   have harr' : ((A.comp (routeBig t i j)).comp Bp).arrows =
       A.arrows ++ [.right i (j + 1), .down t (i + 1) j] ++ Bp.arrows := by
-    simp [arrows_comp, Path.arrows, routeBig, Path.one]
+    simp [GlobalTheory.FlipRun.arrows_comp_eq, Path.arrows, routeBig, Path.one]
   have hA : OnGrid m t A := fun b hb => hp b (by rw [harr]; simp [hb])
   have hB : OnGrid m t Bp := fun b hb => hp b (by rw [harr]; simp [hb])
   refine ⟨A, Bp, rfl, hA, hB, ?_, ?_⟩
@@ -516,9 +511,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim GlobalTheory.FlipRun
 open scoped Pointwise
 
-
-theorem _root_.GlobalTheory.T.exists_classSum_schwartzProducts_gridPath : ∀ {D : D7} {T : Type} {L : LevCh D T} {sc : Consts} {G : GridData L sc} {μ₀ : T}, L.Is μ₀ → ∀ {W : G.Weil} (B : Frames G) (ρ : RealMatch W) (t : T) {e : AE D}, IsIdemSum e (locPl G t) → ∀ (n : Pl D.host.E → ℕ) {X Y : Node} (p : Path T X Y), GlobalTheory.FlipRun.OnGrid D.R.m t p → (GlobalTheory.FlipRun.edges p).Nodup → ∀ {U : Type} (K : (∀ w, (locGrid G t w).Args) → U → ℂ), (∀ (x z : ∀ w, (locGrid G t w).Args) (y : U), (∀ w ∈ locPl G t, ∀ b, z w b ∈ GlobalTheory.SplitFlip.matLat _ (unifAt w ^ n w • GlobalTheory.SplitFlip.stdLat (Kw w) _)) → K (x + z) y = K x y) → (∀ (x : ∀ w, (locGrid G t w).Args) (y : U), K x y ≠ 0 → ∀ w ∈ locPl G t, ∀ b ∈ GlobalTheory.FlipRun.edges p, x w b ∈ GlobalTheory.SplitFlip.matLat _ (GlobalTheory.SplitFlip.stdLat (Kw w) _)) → ∃ (ι : Type) (s : Finset ι) (φ d : ι → PureT G p) (r : ι → GlobalTheory.FlipRun.ArgT G p), (∀ κ ∈ s, GlobalTheory.FlipRun.VecAll ρ e p (φ κ) (d κ)) ∧ ∀ (x : GlobalTheory.FlipRun.ArgT G p) (y : U), GlobalTheory.FlipRun.HalfAll e p x → K (fun w => GlobalTheory.FlipRun.pathArgs B t w p x) y = ∑ κ ∈ s, GlobalTheory.FlipRun.famProd p (φ κ) x * K (fun w => GlobalTheory.FlipRun.pathArgs B t w p (r κ)) y := by
-  first | exact @GlobalTheory.FlipRun.exists_classSum_schwartzProducts_pathInduction
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.ExistsClassSumSchwartzProductsGridPathStatement =====
@@ -1047,7 +1039,6 @@ open GlobalTheory.SplitFlip Matrix
 
 variable {k : Type} [Field k] [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] {Γ : Grid k}
 
-
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem update_two_add (x z : Γ.Args) (b₁ b₂ : Edge) (u u' : Matrix (Fin (Γ.rank b₁.tgt)) (Fin (Γ.rank b₁.src)) k)
     (v v' : Matrix (Fin (Γ.rank b₂.tgt)) (Fin (Γ.rank b₂.src)) k) :
@@ -1072,7 +1063,6 @@ theorem mem_update_two {c : kˣ} {z : Γ.Args} (hz : ∀ b, z b ∈ matLat _ (c 
 
 def setA (i j : ℕ) (x : Γ.Args) (Z : Matrix (Fin (Γ.rank (i + 1, j + 1))) (Γ.Cols i j) k) : Γ.Args :=
   Function.update (Function.update x (.ex i (j + 1)) Z.toCols₁) (.theta (i + 1) j) Z.toCols₂ᵀ
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem joinA_setA (i j : ℕ) (x : Γ.Args) (Z : Matrix (Fin (Γ.rank (i + 1, j + 1))) (Γ.Cols i j) k) :
@@ -1103,10 +1093,8 @@ theorem mem_matLat_cols {A B₁ B₂ : Type} (c : kˣ) (Z : Matrix A (B₁ ⊕ B
     Pi.one_apply, forall_and]
   exact and_congr_right fun _ => forall_comm
 
-
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 def colsL (A B₁ B₂ : Type) : Matrix A (B₁ ⊕ B₂) k →+ Matrix A B₁ k := ⟨⟨toCols₁, rfl⟩, fun _ _ => rfl⟩
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 def colsR (A B₁ B₂ : Type) : Matrix A (B₁ ⊕ B₂) k →+ Matrix B₂ A k := ⟨⟨fun Z => Z.toCols₂ᵀ, rfl⟩, fun _ _ => rfl⟩
@@ -1144,7 +1132,6 @@ theorem mem_of_update_two (hS : Γ.IsTensor ϖ e γ S) {b₁ b₂ : Edge} {x : �
     x b ∈ matLat _ (stdLat k _) := by
   by_contra h'
   exact h (hS.2.1 _ b hb (by rwa [Function.update_of_ne h2, Function.update_of_ne h1]))
-
 
 omit [ValuativeRel k] [TopologicalSpace k] [IsNonarchimedeanLocalField k] in
 theorem add_update_two {x y : Γ.Args} {b₁ b₂ : Edge} (h1 : x b₁ = 0) (h2 : x b₂ = 0) (h1' : y b₁ = 0) (h2' : y b₂ = 0) (u v) :
@@ -1280,12 +1267,12 @@ theorem exists_classes_two {μ₀ : T} (hL : L.Is μ₀) {W : G.Weil} (B : Frame
       (∀ κ ∈ s, VecAll ρ e p (φ κ) (d κ)) ∧ (∀ κ ∈ s, VecAll ρ e q (φ' κ) (d' κ)) ∧
       ∀ x x' y, HalfAll e p x → HalfAll e q x' → K (fun w => pathArgs B t w p x + pathArgs B t w q x') y =
         ∑ κ ∈ s, famProd p (φ κ) x * famProd q (φ' κ) x' * K (fun w => pathArgs B t w p (r κ) + pathArgs B t w q (r' κ)) y := by
-  obtain ⟨ι, s, φ, d, r, a1, a2⟩ := GlobalTheory.T.exists_classSum_schwartzProducts_gridPath hL B ρ t he n p hp np (U := ArgT G q × U)
+  obtain ⟨ι, s, φ, d, r, a1, a2⟩ := GlobalTheory.FlipRun.exists_classSum_schwartzProducts_pathInduction hL B ρ t he n p hp np (U := ArgT G q × U)
     (fun x y => K (x + fun w => pathArgs B t w q y.1) y.2) (fun x z y hz => by rw [add_right_comm, h1 _ z _ hz])
     fun x y h w hw b hb => by
       have := h2 _ _ h w hw b (.inl hb)
       rwa [Pi.add_apply, Pi.add_apply, pathArgs_of_notMem B t w q _ b fun h' => hpq b h' hb, add_zero] at this
-  obtain ⟨ι', s', φ', d', r', b1, b2⟩ := GlobalTheory.T.exists_classSum_schwartzProducts_gridPath hL B ρ t he n q hq nq (U := ι × U)
+  obtain ⟨ι', s', φ', d', r', b1, b2⟩ := GlobalTheory.FlipRun.exists_classSum_schwartzProducts_pathInduction hL B ρ t he n q hq nq (U := ι × U)
     (fun x y => K ((fun w => pathArgs B t w p (r y.1)) + x) y.2) (fun x z y hz => by rw [← add_assoc, h1 _ z _ hz])
     fun x y h w hw b hb => by
       have := h2 _ _ h w hw b (.inr hb)
@@ -1460,8 +1447,6 @@ theorem prod_flipOrder {M : Type*} [CommMonoid M] (m : ℕ) (f : ℕ × ℕ → 
 variable {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m}
   {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks}
 
-
-
 theorem flipAt_of (hL : R.toLevCh.Is A.μ0) (ch : Choice R)
     (hA : ∀ (t : T) (i j : Fin D.R.m), CommutesWith ch.W ch.S.B ch.rm t i j (ch.c i j t))
     (hB : ∀ (t : T) (M : Vol ch.G), M.Is t → GlobalTheory.FlipRun.CuspStep ch.W M ch.rm t)
@@ -1588,7 +1573,6 @@ theorem flipAt_of (hL : R.toLevCh.Is A.μ0) (ch : Choice R)
   exact ⟨hc1, hc2⟩
 
 end GlobalTheory.FlipRun
-
 
 end
 end -- clump:auto

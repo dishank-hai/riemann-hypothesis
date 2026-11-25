@@ -383,10 +383,6 @@ open scoped ENNReal Pointwise
 
 namespace GlobalTheory.ResLine.LowerAverage
 
-theorem countable_subgroupOf {G : Type} [Group G] (Λ N : Subgroup G) [Countable Λ] :
-    Countable (Λ.subgroupOf N) := by
-  apply _root_.GlobalTheory.ResLine.countable_subgroupOf_of_countable <;> assumption
-
 theorem right_of_closed {G : Type} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [LocallyCompactSpace G] [SecondCountableTopology G] [MeasurableSpace G] [BorelSpace G]
     (N Λ : Subgroup G) [Countable Λ] (hN : IsClosed (N : Set G)) (ν : Measure N)
@@ -394,7 +390,7 @@ theorem right_of_closed {G : Type} [Group G] [TopologicalSpace G] [IsTopological
     (hfin : ν D ≠ ⊤) : ν.IsMulRightInvariant := by
   haveI : BorelSpace N := Subtype.borelSpace (fun x => x ∈ (N : Set G))
   haveI : LocallyCompactSpace N := hN.isClosedEmbedding_subtypeVal.locallyCompactSpace
-  haveI := countable_subgroupOf Λ N
+  haveI := GlobalTheory.ResLine.countable_subgroupOf_of_countable Λ N
   exact RightUnfold.isMulRightInvariant_of_lattice ν (Λ.subgroupOf N) D hD hfin
 
 theorem average_lower : ∀ (G : Type) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] [LocallyCompactSpace G] [SecondCountableTopology G] [T2Space G] [MeasurableSpace G] [BorelSpace G] (N M Λ : Subgroup G) [Countable Λ] (ν : Measure N) (π : Measure M) (DN : Set N) (DM : Set M), SemiLat N M Λ ν π DN DM → ∀ (μ : Measure G), μ.IsHaarMeasure → ∀ C : Set G, IsCompact C → ∃ (U : Set G) (c : ℝ≥0∞), IsOpen U ∧ μ U ≠ ⊤ ∧ c ≠ 0 ∧ ∀ u₀ ∈ N, ∀ m₀ ∈ M, ∀ y ∈ C, c ≤ ∫⁻ m : M, ∫⁻ u : N, U.indicator 1 ((u : G) * m * (u₀ * m₀ * y)) ∂ν ∂π := by

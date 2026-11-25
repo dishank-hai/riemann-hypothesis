@@ -31,12 +31,7 @@ theorem isUnitAt_det_of_mem {k : GL (Fin m) (w.adicCompletion E)} (hk : k ∈ KG
   change Valued.v _ = 1
   rw [e]
   generalize Matrix.GeneralLinearGroup.det k = u
-  have h1 : Valued.v ((u : Ov E w) : w.adicCompletion E) ≤ 1 := (u : Ov E w).2
-  have h2 : Valued.v (((u⁻¹ : (Ov E w)ˣ) : Ov E w) : w.adicCompletion E) ≤ 1 := ((u⁻¹ : (Ov E w)ˣ) : Ov E w).2
-  have h3 : Valued.v ((u : Ov E w) : w.adicCompletion E) *
-      Valued.v (((u⁻¹ : (Ov E w)ˣ) : Ov E w) : w.adicCompletion E) = 1 := by
-    rw [← map_mul, ← Subring.coe_mul, Units.mul_inv]; simp
-  exact le_antisymm h1 (h3 ▸ mul_le_of_le_one_right' h2)
+  exact Valuation.Integers.one_of_isUnit' (R := w.adicCompletion E) u.isUnit fun x => x.2
 
 theorem det_diagJ {L : Type} [Field L] (ϖ : L) {j : ℕ} (hj : j ≤ m) : (diagJ m ϖ j).det = ϖ ^ j := by
   rw [diagJ, Matrix.det_diagonal, Finset.prod_ite, Finset.prod_const, Finset.prod_const_one, mul_one,

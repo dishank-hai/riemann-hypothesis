@@ -99,7 +99,6 @@ open scoped TensorProduct
 
 namespace GlobalTheory.UPel.HT
 
-
 open Polynomial in
 theorem exists_idem_crys : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTheory.UPel.HT.Datum p) (R : Type) [CommRing R] (b : GlobalTheory.UPel.HT.Base D R) (C : Type) [CommRing C] (tR : R →+* C) (H : Type 1) [AddCommGroup H] [Module C H] (ρ : D.O →+* Module.End C H) (φ : LinearMap.BilinForm C H), (∀ (c : D.O) x y, φ (ρ c x) y = φ x (ρ (D.star c).unop y)) → ∃ e : Module.End C H, e * e = e ∧ (∀ c, ρ c * e = e * ρ c) ∧ (∀ x y, φ (e x) y = φ x (y - e y)) ∧ (∀ x, ρ (algebraMap (𝓞 D.F) D.O D.ω) (e x) = tR b.ρ • e x) ∧ (∃ v : C, IsUnit v ∧ ∀ x, e x = 0 → ρ (algebraMap (𝓞 D.F) D.O D.ω) x - tR b.ρ • x = v • x) ∧ ∀ N : Submodule C H, (∀ (c : D.O), ∀ x ∈ N, ρ c x ∈ N) → ∀ x ∈ N, e x ∈ N := by
   intro p _ D R _ b C _ tR H _ _ ρ φ hφ
@@ -578,7 +577,6 @@ end Nondeg
 
 end GlobalTheory.TraceCasimir
 
-
 open GlobalTheory.TraceCasimir in
 theorem GlobalTheory.exists_separability_element_of_trace_nondegenerate :
     ∀ (A : Type) [Ring A] [Module.Free ℤ A] [Module.Finite ℤ A],
@@ -819,8 +817,6 @@ section -- clump:auto
 open NumberField
 open scoped TensorProduct
 
-theorem _root_.GlobalTheory.T.ringOfIntegers_eq_zero_of_trace_mulLeft_eq_zero : ∀ (K : Type) [Field K] [NumberField K] (x : 𝓞 K), (∀ y : 𝓞 K, LinearMap.trace ℤ (𝓞 K) (LinearMap.mulLeft ℤ (x * y)) = 0) → x = 0 := by
-  first | (exact @GlobalTheory.ringOfIntegers_trace_mulLeft_nondegenerate)
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.DivisorProofs.RingOfIntegersTraceMulLeftNondegenerateStatement =====
@@ -853,7 +849,7 @@ theorem liftSummand_residueCharZero : ∀ (p : ℕ) [Fact p.Prime] (D : GlobalTh
     obtain ⟨n, rfl | rfl⟩ := Int.eq_nat_or_neg N
     · exact_mod_cast hunitN n (by rintro rfl; simp at hN)
     · push_cast; exact (hunitN n (by rintro rfl; simp at hN)).neg
-  obtain ⟨NF, kF, u, v, hNF, huv, hcomF⟩ := _root_.GlobalTheory.exists_separability_element_of_trace_nondegenerate (𝓞 D.F) (GlobalTheory.T.ringOfIntegers_eq_zero_of_trace_mulLeft_eq_zero D.F)
+  obtain ⟨NF, kF, u, v, hNF, huv, hcomF⟩ := _root_.GlobalTheory.exists_separability_element_of_trace_nondegenerate (𝓞 D.F) (GlobalTheory.ringOfIntegers_trace_mulLeft_nondegenerate D.F)
   haveI := D.freeO; haveI := D.finO
   obtain ⟨NO, kO, x, y, hNO, hxy, hcomO⟩ := _root_.GlobalTheory.exists_separability_element_of_trace_nondegenerate D.O (_root_.GlobalTheory.HTOrderTrace.trace_order_nondeg p D)
   obtain ⟨φ, hφc, hφφ, hφcomm, hφF, hφmod⟩ := _root_.GlobalTheory.lie_idempotents R C (𝓞 D.F) tR D.a b.t b.comax NF kF u v huv hcomF

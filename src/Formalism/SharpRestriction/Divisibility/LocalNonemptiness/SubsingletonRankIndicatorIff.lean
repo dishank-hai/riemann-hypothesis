@@ -168,15 +168,6 @@ theorem finrank_copies (k : ℕ) : Module.finrank ℤ (Fin k → 𝓞 D.host.E) 
   simp only [Formalism.BasicNotions.Ranks.f, Formalism.BasicNotions.Ranks.n]
   ring
 
-theorem subsingleton_rank_indicator_iff (P : Prop) : Subsingleton (Fin (rk01 P) → 𝓞 D.host.E) ↔ P := by
-  unfold rk01
-  by_cases h : P
-  · rw [ite_eq_left h]
-    exact ⟨fun _ => h, fun _ => inferInstance⟩
-  · rw [ite_eq_right h]
-    refine ⟨fun hs => ?_, fun hp => absurd hp h⟩
-    have h1 := congrFun (hs.elim (fun _ => (0 : 𝓞 D.host.E)) (fun _ => 1)) 0
-    exact absurd h1 zero_ne_one
 
 def pmM (dg : PsiT D → ℕ → ℤ) (n : ℕ) : ℤ := ∑ t : D.what₂.Tau, ∑ k ∈ Finset.Icc 1 n, |dg (D.eTau t) k|
 

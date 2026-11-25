@@ -224,12 +224,6 @@ theorem evI_mul (a b : AF F) : evI F (a * b) = evI F a * evI F b :=
 
 theorem evI_zero : evI F 0 = 0 := map_zero (InfiniteAdeleRing.ringEquiv_mixedSpace F)
 
-theorem evI_sum {ι : Type} (s : Finset ι) (g : ι → AF F) : evI F (∑ i ∈ s, g i) = ∑ i ∈ s, evI F (g i) := by
-  classical
-  induction s using Finset.induction_on with
-  | empty => simpa using evI_zero
-  | insert i s hi ih => rw [Finset.sum_insert hi, Finset.sum_insert hi, evI_add, ih]
-
 theorem evI_realAd (t : ℝ) : evI F (realAd F t) = algebraMap ℝ (mixedEmbedding.mixedSpace F) t := by
   change (InfiniteAdeleRing.ringEquiv_mixedSpace F)
     ((InfiniteAdeleRing.ringEquiv_mixedSpace F).symm (algebraMap ℝ _ t)) = _

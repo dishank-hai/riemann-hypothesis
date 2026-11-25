@@ -204,12 +204,7 @@ theorem nonempty_spec
   nbr_ind i w hw := (hBr (jOf B0 i) (wOf B0 i) w hw).choose_spec.1
   self_good i w hw := (hBr (jOf B0 i) (wOf B0 i) w hw).choose_spec.2.1
   nbr_iq i w hw := (hBr (jOf B0 i) (wOf B0 i) w hw).choose_spec.2.2
-  bj := bjC B0 hI
-  bj_span := bjC_span B0 hI
-  bj_rel i s hs' c := by
-    obtain rfl : s = sOfC B0 hI i := RingHom.ext fun y => IsFractionRing.injective (OOf B0 i) (FractionRing (OOf B0 i))
-      ((hs' y).trans (congrArg Subtype.val ((fracRangeEquiv (OOf B0 i)).apply_symm_apply ⟨_, hI _ _ y⟩)).symm)
-    exact bjC_rel B0 hI i c }⟩
+  bj := bjC B0 hI }⟩
 
 end Spec
 

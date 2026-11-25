@@ -191,7 +191,6 @@ theorem movY_other {j : ℕ} (hj : j + 1 + 1 < D.R.m) (k : GA D (G.V (.grid D.R.
   rw [movY, Function.update_of_ne (fun h => h1 (by simpa [Fin.ext_iff] using h)),
     Function.update_of_ne (fun h => h2 (by simpa [Fin.ext_iff] using h))]
 
-
 omit G in
 theorem moveArgs_col {K : Type} [Field K] (Γ : Grid K) {m j : ℕ} (hj : j + 1 + 1 < m) (κ : GL (Fin (Γ.rank (m, j + 1))) K)
     (z z' : Γ.Args) (hex : ∀ i l, z' (.ex i l) = z (.ex i l)) (hex0 : ∀ i l, l ≠ m → z (.ex i l) = 0)
@@ -360,8 +359,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 
-theorem _root_.GlobalTheory.T.lastRowInnerVertex_vacua_scaled_localProduct : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} (ch : Choice R) (large₂ : SizeData₂ D) (F : Face D A), HidaSetting large₂ R F → ch.Is → ShapeAt ch → ∀ (t : T) (Φ : ch.G.Datum) (j : ℕ) (hj : j + 1 + 1 < D.R.m), ∀ k ∈ latGrp ch.G (j + 1), ∃ c₁ c₂ : ℂ, ch.W.om (.mu t D.R.m j) (1, k) (ch.rm.vT D.R.m j) = c₁ • ch.rm.vT D.R.m j ∧ ch.W.om (.mu t D.R.m (j + 1)) (k, 1) (ch.rm.vT D.R.m (j + 1)) = c₂ • ch.rm.vT D.R.m (j + 1) ∧ ∀ x y, c₁ * c₂ * ∏ w ∈ locPl ch.G t, Tflip ch.W ch.S.B t Φ w (oppArgs t ch.S.B w x (GlobalTheory.RowKFix.movY ch.G j hj k y)) = ∏ w ∈ locPl ch.G t, Tflip ch.W ch.S.B t Φ w (oppArgs t ch.S.B w x y) := by
-  first | exact @GlobalTheory.RowKFix.local_prod_col
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.LastRowInnerVertexVacuaScaledLocalProductStatement =====
@@ -656,8 +653,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 
-theorem _root_.GlobalTheory.T.weilRep_pair_fixes_flippedTensorSum : ∀ {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : FamIn D.what₂.LL Γ Pl0 T D.R.m} {Ks : Type} [Field Ks] [NumberField Ks] [Algebra Ks D.what₂.LL] {R : RealDat D A Ks} (ch : Choice R) (large₂ : SizeData₂ D) (F : Face D A), HidaSetting large₂ R F → ch.Is → ∀ (t : T) (Φ : ch.G.Datum) (τ : SchRow ch.G × SchDown ch.G t →₀ ℂ), IsFlipFin t ch.S.B ch.rm Φ τ → ∀ (j : ℕ) (hj : j + 1 + 1 < D.R.m), ∀ k ∈ latGrp ch.G (j + 1), ∀ c₁ c₂ : ℂ, ch.W.om (.mu t D.R.m j) (1, k) (ch.rm.vT D.R.m j) = c₁ • ch.rm.vT D.R.m j → ch.W.om (.mu t D.R.m (j + 1)) (k, 1) (ch.rm.vT D.R.m (j + 1)) = c₂ • ch.rm.vT D.R.m (j + 1) → (∀ x y, c₁ * c₂ * ∏ w ∈ locPl ch.G t, Tflip ch.W ch.S.B t Φ w (oppArgs t ch.S.B w x (GlobalTheory.RowKFix.movY ch.G j hj k y)) = ∏ w ∈ locPl ch.G t, Tflip ch.W ch.S.B t Φ w (oppArgs t ch.S.B w x y)) → ∀ (y : RowPt ch.G) (v : ∀ i : Fin D.R.m, WO (ch.G.V (.grid D.R.m i)) (ch.G.V (.grid D.R.m (i + 1)))), (τ.sum fun d x => x * ((∏ n, d.1 n (y n)) * ∏ i : Fin D.R.m, ch.W.om (.mu t D.R.m i) ((Pi.mulSingle (j + 1) k : Pts ch.G) i, (Pi.mulSingle (j + 1) k : Pts ch.G) (i + 1)) (d.2 i) (v i))) = τ.sum fun d x => x * ((∏ n, d.1 n (y n)) * ∏ i, d.2 i (v i)) := by
-  first | exact @GlobalTheory.RowKFix.Tens.sum_om_single_eq
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.WeilRepPairFixesFlippedTensorSumStatement =====
@@ -684,8 +679,8 @@ theorem key {D : D7} {Γ : Type} [Group Γ] [Fintype Γ] {Pl0 T : Type} {A : Fam
     omega
   obtain ⟨j, rfl⟩ : ∃ j, J = j + 1 := ⟨J - 1, by omega⟩
   have hj : j + 1 + 1 < D.R.m := hJ'.2
-  obtain ⟨c₁, c₂, h1, h2, h3⟩ := GlobalTheory.T.lastRowInnerVertex_vacua_scaled_localProduct ch large₂ F hS hch hsh t Φ j hj k hk
-  exact GlobalTheory.T.weilRep_pair_fixes_flippedTensorSum ch large₂ F hS hch t Φ τ hτ j hj k hk c₁ c₂ h1 h2 h3 y v
+  obtain ⟨c₁, c₂, h1, h2, h3⟩ := GlobalTheory.RowKFix.local_prod_col ch large₂ F hS hch hsh t Φ j hj k hk
+  exact GlobalTheory.RowKFix.Tens.sum_om_single_eq ch large₂ F hS hch t Φ τ hτ j hj k hk c₁ c₂ h1 h2 h3 y v
 
 theorem kfix : Big fun ch => KFix ch := by
   obtain ⟨CF0, h⟩ := GlobalTheory.T.lastRowLatticesGoodPosition_large_depth
@@ -709,8 +704,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 
-theorem _root_.GlobalTheory.T.flippedFiniteTensorLatticeFixed_largeDepth : Big fun ch => KFix ch := by
-  first | exact @GlobalTheory.RowKFix.kfix
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.FlippedFiniteTensorLatticeFixedLargeDepthStatement =====
@@ -736,8 +729,6 @@ theorem qS_xZero {S S₀ T T₀ : HSp D} {ρ : ℕ} (d : HypDec S S₀ ρ) (d' :
     rw [xZero, adj_mul, Matrix.mul_assoc, ← Matrix.mul_assoc (gA T), ← Matrix.mul_assoc (adj d'.jX), d'.gram_XX,
       Matrix.zero_mul, Matrix.mul_zero]
   rw [← cenS_nC, ← neg_inj, LinkPoint.neg_cenS_eq, h, Matrix.zero_mul, trace_zero, map_zero, neg_zero]
-
-
 
 theorem flatBF_source {ρ : ℕ} {B : BesLev D ρ} {J : JacLev D ρ} (s : StepBF ψ B J) {Ψ : WO B.V J.W → ℂ}
     (hΨ : IsThetaFunO ψ B.V J.W Ψ) {n : GA D B.V} (hn : n ∈ flagN B.d) :
@@ -1055,7 +1046,7 @@ theorem even_second (Φ : SchDown G t) (hΦ : ∀ j, IsThetaFunO W.ψ _ _ (Φ j)
   · have e : ∀ h' : Pts G, conAt W hM Φ h' j = lastDat W hM j hj (GlobalTheory.Unf.Inhab.nonempty_volN _).some (h' j) (Φ ⟨j, by omega⟩)
         (castSch G (show j + 1 + 1 = D.R.m by omega) (Φ ⟨j + 1, by omega⟩)) := fun h' => dite_eq_left hj
     rw [e, e, Function.update_self]
-    obtain ⟨χz, hzH, hzE, -, -, hodd⟩ := GlobalTheory.T.thetaGrid_lastRow_column_characters_differ G W t
+    obtain ⟨χz, hzH, hzE, -, -, hodd⟩ := GlobalTheory.RowChars.rowChars G W t
     obtain ⟨hS0, hT0⟩ := hodd j (by omega) (by omega)
     let B := besAt G hM j 0 hj (GlobalTheory.Unf.Inhab.nonempty_volN _).some
     let s := (lastAt G W t hM j hj (GlobalTheory.Unf.Inhab.nonempty_volN _).some).s
@@ -1114,7 +1105,6 @@ theorem jPer_congr_above (M : GlobalTheory.FunObj.Vol G) (t : T) (C C' : BiFam G
     rw [hC j he le_rfl]
     exact jPer_congr_above M t C C' F σ (j + 1 + 1) _ _ (by obtain ⟨a, ha⟩ := he; exact ⟨a + 1, by omega⟩)
       fun i hi hji => hC i hi (by omega)
-
 
 omit hM in
 theorem jPer_congr_window (M : GlobalTheory.FunObj.Vol G) (t : T) (C C' : BiFam G) (F : Fn G (.grid D.R.m D.R.m)) (k : ℕ)
@@ -1217,8 +1207,6 @@ open Formalism.BasicNotions Formalism.BasicNotions.TH Formalism.MainNotions.Glob
 open IsDedekindDomain NumberField MeasureTheory Matrix GlobalTheory.ChiGrid GlobalTheory.FunObj GlobalTheory.RowTest GlobalTheory.StdFrames GlobalTheory.RowClaim
 open GlobalTheory.MixModel GlobalTheory.MixPer GlobalTheory.Grow GlobalTheory.RowUnf GlobalTheory.RowChain GlobalTheory.SeeSaw GlobalTheory.RowVal GlobalTheory.RowReal
 
-theorem _root_.GlobalTheory.T.innermostIntegrand_leftPeriodInvariant_largeDepth : Big fun ch => RInv ch := by
-  first | exact @GlobalTheory.RowLeftInv.rinv
 end -- clump:auto
 end -- clump:auto
 -- ===== end clump member: Development.AbelianVarietyTheory.Proofs.TwistedOperators.InnermostIntegrandLeftPeriodInvariantLargeDepthStatement =====
@@ -1398,7 +1386,7 @@ theorem inv_of (hB : BasicAt ch) (hC : ConLin ch) (hK : KFix ch) (hR : RInv ch) 
 
 theorem main : Big fun ch => InvAt ch :=
   big_mono (fun ch h => inv_of ch h.1 h.2.1 h.2.2.1 h.2.2.2.1 h.2.2.2.2)
-    (Big.and GlobalTheory.T.lastRow_unfolding_basicHypotheses (Big.and GlobalTheory.T.unfoldedProduct_depends_on_dataProduct (Big.and GlobalTheory.T.flippedFiniteTensorLatticeFixed_largeDepth (Big.and GlobalTheory.T.innermostIntegrand_leftPeriodInvariant_largeDepth GlobalTheory.T.definitePeriod_depends_on_productFunction))))
+    (Big.and GlobalTheory.T.lastRow_unfolding_basicHypotheses (Big.and GlobalTheory.T.unfoldedProduct_depends_on_dataProduct (Big.and GlobalTheory.RowKFix.kfix (Big.and GlobalTheory.RowLeftInv.rinv GlobalTheory.T.definitePeriod_depends_on_productFunction))))
 
 end GlobalTheory.RowInv
 end -- clump:auto

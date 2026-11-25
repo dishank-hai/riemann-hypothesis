@@ -978,7 +978,6 @@ end Perm
 
 end CDX
 
-
 open CDX in
 theorem cayDensEx_holds : CayDensEx := by
   intro n ε
@@ -1230,11 +1229,10 @@ theorem expR_zero' {n : ℕ} (ε : Fin n → Bool) : expR ε (0 : EuclideanSpace
   split_ifs with h
   · apply Subtype.ext
     apply Units.ext
-    simp [unrealify_zero', NormedSpace.exp_zero]
+    simp [Formalism.MainNotions.S.Gauge.unrealify_zero, NormedSpace.exp_zero]
   · rfl
 
 end CVI
-
 
 open CVI in
 theorem cayValId_holds : CayValId := by

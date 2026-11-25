@@ -136,7 +136,6 @@ theorem jj_iK (w : D.what₂.places.Pl) (v : B.ch.A.vT) (x : B.E) :
   unfold jj
   split_ifs <;> simp [starRingEnd_apply]
 
-
 variable (M) in
 def co : M.Val →ₗ[ℂ] Pol ℂ D.what₂.Tau (D.R.N i) :=
   polOf (Gr B.emb D.what₂.embLL (D.R.N i)) (shiftOf (B.lam i)) (fr0 B.emb D.what₂.embLL (D.R.N i)) ∘ₗ M.Val.subtype
@@ -199,7 +198,6 @@ theorem co_range : LinearMap.range (co M) = Formalism.MainNotions.product_first_
       rw [R.val_eq]
       exact Submodule.mem_map_of_mem hP
     exact ⟨⟨_, h⟩, co_of_eq rfl⟩
-
 
 variable (M) in
 def wl (w : D.what₂.places.Pl) (L : Submodule (𝓞 B.E) (Fin (D.R.N i) → B.E)) : AddSubgroup M.Val where
@@ -1227,11 +1225,6 @@ namespace GlobalTheory.LvT.Built.IntPPass
 
 open NumberField IsDedekindDomain Formalism.BasicNotions Formalism.L2.Col Formalism.L2.DIV GlobalTheory.Mem.Col2 GlobalTheory.LvT GlobalTheory.LvT.Built
 
-theorem ev_smul {D : D7} {u : D.what₂.Word} (B : Built.Dat D u) (i : ℕ) (c : D.what₂.LL) (F : B.V i) :
-    B.ev i (c • F) = D.what₂.embLL c • B.ev i F := by
-  unfold Built.Dat.ev
-  exact map_smulₛₗ _ _ _
-
 theorem intP_of_kerP : ∀ (D : D7) (u : D.what₂.Word) (B : Built.Dat D u) (i : ℕ) (sp : Split (B.J.A i) B.J.T) (sp' : Split (B.J.A (i + 1)) B.J.T) (M : PtModel B.ch i) (M' : PtModel B.ch (i + 1)) (R : B.Real i sp M) (R' : B.Real (i + 1) sp' M') (k : B.Ker i) (Co : M.Coord) (Co' : M'.Coord) (K : KerPt M M'), K.TgtEq → Built.Dat.KerIs R R' K k → Co.Ok → Co'.Ok → R.ValIs Co → R'.ValIs Co' → Built.Dat.KerP k → K.IntP Co Co' := by
   intro D u B i sp sp' M M' R R' k Co Co' K hT hK hCo hCo' hV hV' hP w hw hs p p' y hy
   obtain ⟨ζ, b, d, rfl⟩ := R.surj p
@@ -1249,7 +1242,7 @@ theorem intP_of_kerP : ∀ (D : D7) (u : D.what₂.Word) (B : Built.Dat D u) (i 
   rw [hT, hyy, K.src, ← map_smul]
   refine (GlobalTheory.LvT.ValEq.valB_laws D u B.ch (i + 1) M' Co' hCo' w hw Finset.univ (R'.pt b' d')).2.2.2 g' _ ?_
   refine (hV'.ker w hw hs b' d' _).2 ⟨_, h1, ?_⟩
-  rw [ev_smul, ← h2, map_zpow₀, map_natCast]
+  rw [GlobalTheory.LvT.Built.BarPass.ev_smul, ← h2, map_zpow₀, map_natCast]
   rfl
 
 end GlobalTheory.LvT.Built.IntPPass
@@ -1424,7 +1417,6 @@ theorem loss_eq {s : ℕ} (hs : D.R.t + 1 = 2 * s) (w : D.what₂.places.Pl) :
     simp
 
 end ColSharp
-
 
 open ColSharp in
 theorem levelChainSharpColumnValuation_of_stability : ∀ (D : D7) (u : D.what₂.Word) (X : Ch D u),
